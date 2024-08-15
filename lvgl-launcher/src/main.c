@@ -129,7 +129,6 @@ static void test_ui() {
   lv_style_set_y(&style, 25);
 
   list1 = lv_list_create(lv_scr_act());
-  lv_group_add_obj(input_group, list1);
   lv_obj_add_style(list1, &style, LV_PART_MAIN);
 
   /*Add buttons to the list*/
@@ -158,21 +157,15 @@ static void test_ui() {
 
 static void encoder_cb(lv_indev_drv_t *drv, lv_indev_data_t *data) {
   Input input;
-  if (enc_data->inputQueueSize > 0) {
-    input = input_queue_read(enc_data);
-    printf("CB: pressed %d key, %s\n", input.key,
-           input.type ? "release" : "press");
+  if (enc_data->inputQueue[INPUT_DEVICE_ENCODER]->QueueSize > 0) {
+    input = input_queue_read(enc_data->inputQueue[INPUT_DEVICE_ENCODER]);
+    printf("CB: encoder %s\n", input.key ? "down" : "up");
     switch (input.key) {
     case INPUT_KEY_UP:
       data->enc_diff = -1;
       break;
     case INPUT_KEY_DOWN:
       data->enc_diff = 1;
-      break;
-    // Do something about buttons
-    case INPUT_KEY_OK:
-    case INPUT_KEY_BACK:
-      data->state = !input.type;
       break;
     default:
       printf("Input reading error\n");
