@@ -24,11 +24,15 @@ int main(void)
   struct timespec rem, req = {0, 200 * 1000 * 1000};
   while (*data->running)
   {
-    if (data->inputQueueSize > 0)
+    if (data->inputQueue[INPUT_DEVICE_ENCODER]->QueueSize > 0)
     {
-      input = input_queue_read(data);
-      printf("Test: pressed %d key, %s press\n", input.key,
-             input.type ? "long" : "short");
+      input = input_queue_read(data->inputQueue[INPUT_DEVICE_ENCODER]);
+      printf("Test: encoder %d\n", input.key);
+    }
+    if (data->inputQueue[INPUT_DEVICE_BUTTONS]->QueueSize > 0)
+    {
+      input = input_queue_read(data->inputQueue[INPUT_DEVICE_BUTTONS]);
+      printf("Test: buttons %d %s\n", input.key, input.type ? "up" : "down");
     }
     nanosleep(&req, &rem);
   }
