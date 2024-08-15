@@ -15,34 +15,34 @@ bool readPin(int pin)
   return value - 48;
 }
 
-void input_queue_input(Data* data, InputKey key, InputType type)
+void input_queue_input(InputQueue* queue, InputKey key, InputType type)
 {
-  pthread_mutex_lock(&data->queue_mutex);
+  pthread_mutex_lock(&queue->mutex);
   Input input = {key, type};
-  uint8_t size = data->inputQueueSize;
+  uint8_t size = queue->QueueSize;
   if (size < INPUT_QUEUE_SIZE_MAX - 1)
   {
-    data->inputQueue[size] = input;
-    data->inputQueueSize++;
+    queue->data[size] = input;
+    queue->QueueSize++;
   }
-  pthread_mutex_unlock(&data->queue_mutex);
+  pthread_mutex_unlock(&queue->mutex);
 }
 
-Input input_queue_read(Data* data)
+Input input_queue_read(InputQueue* queue)
 {
-  pthread_mutex_lock(&data->queue_mutex);
+  pthread_mutex_lock(&queue->mutex);
   Input input;
-  uint8_t size = data->inputQueueSize;
+  uint8_t size = queue->QueueSize;
   if (size > 0)
   {
-    input = data->inputQueue[0];
+    input = queue->data[0];
     for (uint8_t i = 0; i < size - 1; i++)
     {
-      data->inputQueue[i] = data->inputQueue[i + 1];
+      queue->data[i] = queue->data[i + 1];
     }
-    data->inputQueueSize--;
+    queue->QueueSize--;
   }
-  pthread_mutex_unlock(&data->queue_mutex);
+  pthread_mutex_unlock(&queue->mutex);
   return input;
 }
 
@@ -64,7 +64,8 @@ void* encoder_interrupt(void* ctx)
       {
         uint8_t direction = encoder_A == encoder_B;
         // printf("Direction: %d\n", direction);
-        input_queue_input(data, direction, INPUT_TYPE_PRESS);
+        input_queue_input(data->inputQueue[INPUT_DEVICE_ENCODER], direction,
+                          INPUT_TYPE_PRESS);
       }
       data->encoder_A_prev = encoder_A;
     }
@@ -79,7 +80,7 @@ void* encoder_interrupt(void* ctx)
         nanosleep(&req, &rem);
         if (readPin(data->button[i]) == pos)
         {
-          input_queue_input(data, 2 + i, pos);
+          input_queue_input(data->inputQueue[INPUT_DEVICE_BUTTONS], 2 + i, pos);
         }
       }
     }
@@ -125,10 +126,14 @@ int init(Data* data)
     readPin(data->poll_gpio[i].fd);  // Dummy read
   }
 
-  if (pthread_mutex_init(&data->queue_mutex, NULL) != 0)
+  for (uint8_t i = 0; i < 2; i++)
   {
-    printf("Can't init mutex\n");
-    return 1;
+    data->inputQueue[i] = malloc(sizeof(*data->inputQueue[i]));
+    if (pthread_mutex_init(&data->inputQueue[i]->mutex, NULL) != 0)
+    {
+      printf("Can't init mutex\n");
+      return 1;
+    }
   }
 
   if (!data->running)
@@ -163,7 +168,11 @@ void deinit(Data* data)
     snprintf(command, 64, "echo %d > /sys/class/gpio/unexport", pin[i]);
     system(command);
   }
-  pthread_mutex_destroy(&data->queue_mutex);
+  for (uint8_t i = 0; i < 2; i++)
+  {
+    pthread_mutex_destroy(&data->inputQueue[i]->mutex);
+    free(data->inputQueue[i]);
+  }
 }
 
 int encoder_grab(Data* data)
@@ -218,16 +227,21 @@ int main(void)
   Input input;
   while (running)
   {
-    if (data->inputQueueSize > 0)
+    if (data->inputQueue[INPUT_DEVICE_ENCODER]->QueueSize > 0)
     {
-      input = input_queue_read(data);
-      printf("Main: pressed %d key, %s\n", input.key,
-             input.type ? "release" : "press");
+      input = input_queue_read(data->inputQueue[INPUT_DEVICE_ENCODER]);
+      printf("Main: encoder %d\n", input.key);
+    }
+    if (data->inputQueue[INPUT_DEVICE_BUTTONS]->QueueSize > 0)
+    {
+      input = input_queue_read(data->inputQueue[INPUT_DEVICE_BUTTONS]);
+      printf("Main: buttons %d %s\n", input.key, input.type ? "up" : "down");
     }
     nanosleep(&req, &rem);
   }
 
   encoder_release(data);
+  free(data);
   printf("\nMain: exit\n");
   return 0;
 }

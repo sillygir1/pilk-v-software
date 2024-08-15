@@ -26,6 +26,12 @@ typedef enum
 
 typedef enum
 {
+  INPUT_DEVICE_ENCODER,
+  INPUT_DEVICE_BUTTONS,
+} InputDevice;
+
+typedef enum
+{
   INPUT_KEY_UP,
   INPUT_KEY_DOWN,
   INPUT_KEY_OK,
@@ -50,16 +56,21 @@ typedef struct
 
 typedef struct
 {
-  int enc_A;                               // File descriptor for ENC_A pin
-  int enc_B;                               // File descriptor for ENC_B pin
-  int button[2];                           // File descriptors for button pins
-  uint8_t encoder_A_prev;                  // Last ENC_A value
-  struct pollfd poll_gpio[3];              // Gpio poll events
-  bool* running;                           // Interrupt thread running flag
-  pthread_t encoder_pth;                   // Encoder thread identifier
-  Input inputQueue[INPUT_QUEUE_SIZE_MAX];  // Input queue
-  uint8_t inputQueueSize;                  // Current queue size
-  pthread_mutex_t queue_mutex;             // Queue mutex
+  Input data[INPUT_QUEUE_SIZE_MAX];  // Stored input data
+  uint8_t QueueSize;                 // Current queue size
+  pthread_mutex_t mutex;             // Queue mutex
+} InputQueue;
+
+typedef struct
+{
+  int enc_A;                   // File descriptor for ENC_A pin
+  int enc_B;                   // File descriptor for ENC_B pin
+  int button[2];               // File descriptors for button pins
+  uint8_t encoder_A_prev;      // Last ENC_A value
+  struct pollfd poll_gpio[3];  // Gpio poll events
+  bool* running;               // Interrupt thread running flag
+  pthread_t encoder_pth;       // Encoder thread identifier
+  InputQueue* inputQueue[2];   // Input queues
 } Data;
 
 // From <time.h>
@@ -69,12 +80,12 @@ int nanosleep(const struct timespec* req, struct timespec* rem);
 /// @param data Data struct
 /// @param key Input key
 /// @param type Input type
-void input_queue_input(Data* data, InputKey key, InputType type);
+void input_queue_input(InputQueue* queue, InputKey key, InputType type);
 
 /// @brief Read input event from queue
 /// @param data Data struct
 /// @return Input event
-Input input_queue_read(Data* data);
+Input input_queue_read(InputQueue* queue);
 
 /// @brief Initialize input
 /// @param data Data struct
