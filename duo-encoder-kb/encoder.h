@@ -18,8 +18,8 @@ typedef enum
 {
   ENC_A_NUM = 502,
   ENC_B_NUM = 505,
-  BTN_1_NUM = 507,
-  BTN_2_NUM = 506,
+  BTN_1_NUM = 506,
+  BTN_2_NUM = 507,
 
   PINS_NUM = 4,
 } InputPins;
