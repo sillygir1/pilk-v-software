@@ -10,6 +10,6 @@
 #define R5 20.0 // Resistor value in kOhm
 #define R6 68.0 // Resistor value in kOhm
 
-int init();
+int adc_init();
 
-float read_voltage();
+float read_voltage(int fd);

@@ -1,8 +1,10 @@
 #include "battery.h"
 
+#ifndef PLUGIN
 bool running;
+#endif
 
-int init() {
+int adc_init() {
   if ((system("lsmod | grep -q \"cv180x_saradc\"") == 0) ||
       (system("lsmod | grep -q \"cv181x_saradc\"") == 0)) {
     printf("SARADC module already loaded.\n");
@@ -33,11 +35,15 @@ float read_voltage(int fd) {
   len = read(fd, buffer, sizeof(buffer) - 1);
   if (len != 0) {
     adc_value = atoi(buffer);
+#ifndef PLUGIN
     printf("ADC%c value is %d\n", ADC_CHANNEL, adc_value);
+#endif
   }
   float voltage =
       ((float)adc_value / 4096 * 3.3) * (float)(R5 + R6) / (float)R6;
+#ifndef PLUGIN
   printf("%.02f volts\n", voltage);
+#endif
   return voltage;
 }
 
