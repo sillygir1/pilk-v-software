@@ -5,29 +5,29 @@ bool running;
 #endif
 
 int adc_init() {
-  if ((system("lsmod | grep -q \"cv180x_saradc\"") == 0) ||
-      (system("lsmod | grep -q \"cv181x_saradc\"") == 0)) {
+  if ((system("lsmod | grep -q \"cv181x_saradc\"") == 0)) {
     printf("SARADC module already loaded.\n");
   } else {
-    system("insmod $(find / -name \"cv180x_saradc.ko\" 2>/dev/null)");
     system("insmod $(find / -name \"cv181x_saradc.ko\" 2>/dev/null)");
     printf("SARADC module loaded.\n");
   }
-
   int fd = open("/sys/class/cvi-saradc/cvi-saradc0/device/cv_saradc",
                 O_RDWR | O_NOCTTY | O_NDELAY);
-
   if (fd < 0) {
     printf("Error at opening ADC!\n");
     return -1;
   }
+
+  char adc_channel = ADC_CHANNEL;
+  write(fd, &adc_channel, 1);
+
+  return fd;
 }
 
 float read_voltage(int fd) {
   char buffer[8];
   int len = 0;
   int adc_value = 0;
-
   for (int i = 0; i < sizeof(buffer); i++) {
     buffer[i] = 0;
   }
@@ -56,13 +56,10 @@ int main() {
 
   running = true;
 
-  int fd = init();
+  int fd = adc_init();
   if (fd < 0) {
     return 1;
   }
-
-  char adc_channel = ADC_CHANNEL;
-  write(fd, &adc_channel, 1);
 
   while (running) {
     read_voltage(fd);
