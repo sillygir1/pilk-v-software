@@ -5,6 +5,7 @@ CC 				= ~/coding/duo-buildroot-sdk/host-tools/gcc/riscv64-linux-musl-x86_64/bin
 LVGL_DIR_NAME 	?= lvgl
 LVGL_DIR 		?= ../lvgl
 ENC_DIR = ../duo-encoder-kb
+ADC_DIR = ../duo-battery
 
 WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith \
 					-fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess \
@@ -13,7 +14,7 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter \
 					-Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes \
 					-Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare -std=c99
-CFLAGS 			?= -O3 -g0 -mcpu=c906fdv -march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d -Wall -Wshadow -I$(LVGL_DIR)/ -I$(ENC_DIR)/ $(WARNINGS) -DPLUGIN
+CFLAGS 			?= -O3 -g0 -mcpu=c906fdv -march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d -Wall -Wshadow -I$(LVGL_DIR)/ -I$(ENC_DIR)/ -I$(ADC_DIR)/ $(WARNINGS) -DPLUGIN
 LDFLAGS 		?= -lm
 BIN 			= demo
 BUILD_DIR 		= ./build
@@ -30,6 +31,7 @@ include $(LVGL_DIR)/lvgl/lvgl.mk
 include $(LVGL_DIR)/lv_drivers/lv_drivers.mk
 
 CSRCS 			+=$(ENC_DIR)/encoder.c 
+CSRCS 			+=$(ADC_DIR)/battery.c 
 
 OBJEXT 			?= .o
 

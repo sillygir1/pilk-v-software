@@ -9,6 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "battery.h"
 #include "encoder.h"
 
 #define DISP_BUF_SIZE (128 * 1024)
@@ -17,6 +18,8 @@ bool running;
 Data *enc_data;
 static lv_obj_t *list1;
 static lv_group_t *input_group;
+
+lv_obj_t *battery_icon;
 
 static void event_handler(lv_event_t *e) {
   lv_event_code_t code = lv_event_get_code(e);
@@ -75,13 +78,22 @@ int main(void) {
   struct timespec rem, req = {0, 100 * 1000 * 1000};
   Input input;
 
+  int adc_fd = adc_init();
+  if (init < 0)
+    printf("Adc init issue");
+
   /*Handle LitlevGL tasks (tickless mode)*/
   while (running) {
     lv_timer_handler();
 
+    char text[64];
+    snprintf(text, 64, "%.01fV", read_voltage(adc_fd));
+    lv_label_set_text(battery_icon, text);
+
     nanosleep(&req, &rem);
   }
   encoder_release(enc_data);
+  close(adc_fd);
   free(enc_data);
   return 0;
 }
@@ -108,8 +120,9 @@ static void test_ui() {
   // Disabling scrollbar
   lv_obj_set_scrollbar_mode(lv_scr_act(), LV_SCROLLBAR_MODE_OFF);
 
-  lv_obj_t *battery_icon = lv_label_create(lv_scr_act());
-  lv_label_set_text(battery_icon, "57\% \xEF\x89\x82");
+  battery_icon = lv_label_create(lv_scr_act());
+
+  lv_label_set_text(battery_icon, "0\% \xEF\x89\x82");
   lv_obj_set_align(battery_icon, LV_ALIGN_TOP_RIGHT);
   lv_obj_set_style_pad_right(battery_icon, 5, LV_PART_MAIN);
 
