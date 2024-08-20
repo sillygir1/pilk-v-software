@@ -79,7 +79,7 @@ int main(void) {
   Input input;
 
   int adc_fd = adc_init();
-  if (init < 0)
+  if (adc_fd < 0)
     printf("Adc init issue");
 
   /*Handle LitlevGL tasks (tickless mode)*/
