@@ -1,5 +1,7 @@
 #include "main_screen.h"
 
+static lv_obj_t *main_menu_list;
+
 #define MAIN_SECTION_SIZE 2
 #define SETTINGS_SECTION_SIZE 3
 #define POWER_SECTION_SIZE 2
@@ -65,11 +67,14 @@ static void event_handler(lv_event_t *e) {
   lv_obj_t *obj = lv_event_get_target(e);
   Main_menu *main_menu = lv_event_get_user_data(e);
 
-  if (code == LV_EVENT_CLICKED || code == LV_EVENT_PRESSED) {
-    // LV_LOG_USER("Clicked: %s", lv_list_get_btn_text(list1, obj));
-    // printf("Clicked: %s\n", lv_list_get_btn_text(main_menu->list1, obj));
-    const char *button_text = lv_list_get_btn_text(main_menu->list1, obj);
+  if (code == LV_EVENT_CLICKED) {
+    const char *button_text = lv_list_get_btn_text(main_menu_list, obj);
     menu_buttons(button_text);
+  } else if (code == LV_EVENT_KEY) {
+    if (lv_indev_get_key(lv_indev_get_act()) == LV_KEY_ESC) {
+      // Do nothing on the main screen
+      // printf("Back button pressed!\n");
+    }
   }
 }
 
@@ -85,12 +90,12 @@ void menu_ui(Main_menu *main_menu) {
 
   lv_obj_set_y(main_menu->battery_icon, 5);
 
-  lv_obj_t *mode_label = lv_label_create(lv_scr_act());
-  lv_label_set_text(mode_label, "USB RNDIS");
-  lv_obj_set_align(mode_label, LV_ALIGN_TOP_LEFT);
-  lv_obj_set_style_pad_left(mode_label, 5, LV_PART_MAIN);
+  main_menu->mode_label = lv_label_create(lv_scr_act());
+  lv_label_set_text(main_menu->mode_label, "USB RNDIS");
+  lv_obj_set_align(main_menu->mode_label, LV_ALIGN_TOP_LEFT);
+  lv_obj_set_style_pad_left(main_menu->mode_label, 5, LV_PART_MAIN);
 
-  lv_obj_set_y(mode_label, 5);
+  lv_obj_set_y(main_menu->mode_label, 5);
 
   static lv_style_t style;
   lv_style_init(&style);
@@ -98,24 +103,25 @@ void menu_ui(Main_menu *main_menu) {
   lv_style_set_height(&style, 295);
   lv_style_set_y(&style, 25);
 
-  lv_obj_t *list1 = main_menu->list1;
-  list1 = lv_list_create(lv_scr_act());
-  lv_obj_add_style(list1, &style, LV_PART_MAIN);
+  main_menu_list = lv_list_create(lv_scr_act());
+  lv_obj_add_style(main_menu_list, &style, LV_PART_MAIN);
 
   lv_obj_t *btn;
   for (uint8_t i = 0; i < MAIN_SECTION_SIZE; i++) {
-    btn = lv_list_add_btn(list1, main_section_icons[i], main_section[i]);
-    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_CLICKED, main_menu);
-  }
-  lv_list_add_text(list1, "Settings");
-  for (uint8_t i = 0; i < SETTINGS_SECTION_SIZE; i++) {
     btn =
-        lv_list_add_btn(list1, settings_section_icons[i], settings_section[i]);
-    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_CLICKED, main_menu);
+        lv_list_add_btn(main_menu_list, main_section_icons[i], main_section[i]);
+    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, main_menu);
   }
-  lv_list_add_text(list1, "Power");
+  lv_list_add_text(main_menu_list, "Settings");
+  for (uint8_t i = 0; i < SETTINGS_SECTION_SIZE; i++) {
+    btn = lv_list_add_btn(main_menu_list, settings_section_icons[i],
+                          settings_section[i]);
+    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, main_menu);
+  }
+  lv_list_add_text(main_menu_list, "Power");
   for (uint8_t i = 0; i < POWER_SECTION_SIZE; i++) {
-    btn = lv_list_add_btn(list1, power_section_icons[i], power_section[i]);
-    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_CLICKED, main_menu);
+    btn = lv_list_add_btn(main_menu_list, power_section_icons[i],
+                          power_section[i]);
+    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, main_menu);
   }
 }
