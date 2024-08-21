@@ -51,22 +51,6 @@ static void buttons_cb(lv_indev_drv_t *drv, lv_indev_data_t *data) {
 void battery_timer(lv_timer_t *timer) {
   Main_menu *main_menu = timer->user_data;
   update_charge(main_menu);
-  // char text[64];
-  // float voltage = read_voltage(main_menu->adc_fd);
-  // char symbol[4];
-  // if (voltage > 4.1) {
-  //   snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_FULL);
-  // } else if (voltage > 3.9) {
-  //   snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_3);
-  // } else if (voltage > 3.7) {
-  //   snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_2);
-  // } else if (voltage > 3.5) {
-  //   snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_1);
-  // } else {
-  //   snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_EMPTY);
-  // }
-  // snprintf(text, 64, "%.01fV %s", voltage, symbol);
-  // lv_label_set_text(main_menu->battery_icon, text);
 }
 
 int main_init() {
@@ -125,20 +109,23 @@ int main(void) {
   signal(SIGINT, sig_handler);
   main_init();
   encoder_grab(main_menu->enc_data);
-  menu_ui(main_menu);
 
-  struct timespec rem, req = {0, 100 * 1000 * 1000};
-  Input input;
+  // lv_obj_t *scr1 = lv_obj_create(NULL);
+  // lv_obj_t *scr2 = lv_obj_create(NULL);
+  // lv_scr_load(scr1);
+  menu_ui(main_menu);
 
   system("psplash-write \"MSG Initializing ADC\"");
   main_menu->adc_fd = adc_init();
   if (main_menu->adc_fd < 0)
     printf("Adc init issue");
 
+  update_charge(main_menu);
   lv_timer_t *timer = lv_timer_create(battery_timer, 2000, main_menu);
 
   // system("psplash-write \"QUIT\"");
 
+  struct timespec rem, req = {0, 100 * 1000 * 1000};
   while (running) {
     lv_timer_handler();
 

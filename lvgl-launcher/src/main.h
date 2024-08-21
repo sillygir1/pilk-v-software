@@ -17,8 +17,8 @@
 typedef struct {
   bool *running;
   Data *enc_data;
-  lv_obj_t *list1;
   lv_group_t *input_group;
   lv_obj_t *battery_icon;
+  lv_obj_t *mode_label;
   int adc_fd;
 } Main_menu;
