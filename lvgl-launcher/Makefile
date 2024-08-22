@@ -33,6 +33,7 @@ include $(LVGL_DIR)/lv_drivers/lv_drivers.mk
 CSRCS 			+=$(ENC_DIR)/encoder.c 
 CSRCS 			+=$(ADC_DIR)/battery.c 
 CSRCS 			+=./src/views/main_screen.c
+CSRCS 			+=./src/views/apps_screen.c
 
 OBJEXT 			?= .o
 

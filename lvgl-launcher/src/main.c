@@ -108,18 +108,15 @@ int main(void) {
 
   signal(SIGINT, sig_handler);
   main_init();
+  menu_ui();
   encoder_grab(main_menu->enc_data);
-
-  // lv_obj_t *scr1 = lv_obj_create(NULL);
-  // lv_obj_t *scr2 = lv_obj_create(NULL);
-  // lv_scr_load(scr1);
-  menu_ui(main_menu);
 
   system("psplash-write \"MSG Initializing ADC\"");
   main_menu->adc_fd = adc_init();
   if (main_menu->adc_fd < 0)
     printf("Adc init issue");
 
+  draw_status_bar();
   update_charge(main_menu);
   lv_timer_t *timer = lv_timer_create(battery_timer, 2000, main_menu);
 
@@ -154,4 +151,21 @@ uint32_t custom_tick_get(void) {
 
   uint32_t time_ms = now_ms - start_ms;
   return time_ms;
+}
+
+void draw_status_bar() {
+  main_menu->battery_icon = lv_label_create(lv_scr_act());
+
+  lv_label_set_text(main_menu->battery_icon, "0\% \xEF\x89\x82");
+  lv_obj_set_align(main_menu->battery_icon, LV_ALIGN_TOP_RIGHT);
+  lv_obj_set_style_pad_right(main_menu->battery_icon, 5, LV_PART_MAIN);
+
+  lv_obj_set_y(main_menu->battery_icon, 5);
+
+  main_menu->mode_label = lv_label_create(lv_scr_act());
+  lv_label_set_text(main_menu->mode_label, "USB RNDIS");
+  lv_obj_set_align(main_menu->mode_label, LV_ALIGN_TOP_LEFT);
+  lv_obj_set_style_pad_left(main_menu->mode_label, 5, LV_PART_MAIN);
+
+  lv_obj_set_y(main_menu->mode_label, 5);
 }
