@@ -1,4 +1,4 @@
-#include "main.h"
+#include "launcher.h"
 #include "views/main_screen.h"
 
 #define DISP_BUF_SIZE (128 * 1024)
@@ -115,6 +115,7 @@ int main(void) {
   main_menu->adc_fd = adc_init();
   if (main_menu->adc_fd < 0)
     printf("Adc init issue");
+  system("psplash-write \"PROGRESS 100\"");
 
   draw_status_bar();
   update_charge(main_menu);

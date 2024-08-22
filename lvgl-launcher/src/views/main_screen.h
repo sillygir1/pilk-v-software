@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../main.h"
+#include "../launcher.h"
 
 void update_charge(Main_menu *main_menu);
 

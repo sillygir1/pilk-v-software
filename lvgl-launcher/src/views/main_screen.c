@@ -39,7 +39,7 @@ void update_charge(Main_menu *main_menu) {
 static void menu_buttons(char *button_text) {
   if (strcmp(button_text, main_section[0]) == 0) {
     printf("Launching pm3 client...\n");
-    // Clean screen and launch proxmark3 client
+    // Clean screen, release encoder and launch proxmark3 client
   } else if (strcmp(button_text, main_section[1]) == 0) {
     printf("Opening apps view...\n");
     lv_obj_del(main_menu_list);

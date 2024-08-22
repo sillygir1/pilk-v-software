@@ -2,7 +2,6 @@
 
 #include "lv_drivers/display/fbdev.h"
 #include "lv_drivers/indev/evdev.h"
-#include "lvgl/demos/lv_demos.h"
 #include "lvgl/lvgl.h"
 #include "lvgl/src/font/lv_symbol_def.h"
 #include <pthread.h>
