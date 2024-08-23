@@ -16,29 +16,10 @@ const char *power_section[POWER_SECTION_SIZE] = {"Reboot", "Power off"};
 const char *power_section_icons[POWER_SECTION_SIZE] = {LV_SYMBOL_REFRESH,
                                                        LV_SYMBOL_POWER};
 
-void update_charge(Main_menu *main_menu) {
-  char text[64];
-  float voltage = read_voltage(main_menu->adc_fd);
-  char symbol[4];
-  if (voltage > 4.1) {
-    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_FULL);
-  } else if (voltage > 3.9) {
-    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_3);
-  } else if (voltage > 3.7) {
-    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_2);
-  } else if (voltage > 3.5) {
-    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_1);
-  } else {
-    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_EMPTY);
-  }
-  snprintf(text, 64, "%.01fV %s", voltage, symbol);
-  if (main_menu->battery_icon)
-    lv_label_set_text(main_menu->battery_icon, text);
-}
-
 static void menu_buttons(char *button_text) {
   if (strcmp(button_text, main_section[0]) == 0) {
     printf("Launching pm3 client...\n");
+    launch_client();
     // Clean screen, release encoder and launch proxmark3 client
   } else if (strcmp(button_text, main_section[1]) == 0) {
     printf("Opening apps view...\n");

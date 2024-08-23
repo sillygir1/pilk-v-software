@@ -50,10 +50,10 @@ static void buttons_cb(lv_indev_drv_t *drv, lv_indev_data_t *data) {
 
 void battery_timer(lv_timer_t *timer) {
   Main_menu *main_menu = timer->user_data;
-  update_charge(main_menu);
+  update_charge();
 }
 
-int main_init() {
+void lvgl_init() {
   /*LittlevGL init*/
   lv_init();
 
@@ -107,7 +107,7 @@ int main(void) {
   system("psplash-write \"MSG Starting launcher\"");
 
   signal(SIGINT, sig_handler);
-  main_init();
+  lvgl_init();
   menu_ui();
   encoder_grab(main_menu->enc_data);
 
@@ -118,7 +118,7 @@ int main(void) {
   system("psplash-write \"PROGRESS 100\"");
 
   draw_status_bar();
-  update_charge(main_menu);
+  update_charge();
   lv_timer_t *timer = lv_timer_create(battery_timer, 2000, main_menu);
 
   // system("psplash-write \"QUIT\"");
@@ -169,4 +169,33 @@ void draw_status_bar() {
   lv_obj_set_style_pad_left(main_menu->mode_label, 5, LV_PART_MAIN);
 
   lv_obj_set_y(main_menu->mode_label, 5);
+}
+
+void update_charge() {
+  char text[64];
+  float voltage = read_voltage(main_menu->adc_fd);
+  char symbol[4];
+  if (voltage > 4.1) {
+    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_FULL);
+  } else if (voltage > 3.9) {
+    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_3);
+  } else if (voltage > 3.7) {
+    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_2);
+  } else if (voltage > 3.5) {
+    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_1);
+  } else {
+    snprintf(symbol, 4, "%s", LV_SYMBOL_BATTERY_EMPTY);
+  }
+  snprintf(text, 64, "%.01fV %s", voltage, symbol);
+  if (main_menu->battery_icon)
+    lv_label_set_text(main_menu->battery_icon, text);
+}
+
+void launch_client() {
+  lv_obj_clean(lv_scr_act());
+  encoder_release(main_menu->enc_data);
+  system("./proxmark3");
+  encoder_grab(main_menu->enc_data);
+  draw_status_bar();
+  menu_ui();
 }

@@ -22,4 +22,10 @@ typedef struct {
   int adc_fd;
 } Main_menu;
 
+void lvgl_init();
+
 void draw_status_bar();
+
+void update_charge();
+
+void launch_client();
