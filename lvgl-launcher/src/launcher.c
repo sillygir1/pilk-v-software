@@ -130,6 +130,7 @@ int main(void) {
     nanosleep(&req, &rem);
   }
   encoder_release(main_menu->enc_data);
+  lv_timer_del(timer);
   close(main_menu->adc_fd);
   free(main_menu->enc_data);
   free(main_menu);
