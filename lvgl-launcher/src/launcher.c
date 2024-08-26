@@ -195,7 +195,7 @@ void update_charge() {
 void launch_client() {
   lv_obj_clean(lv_scr_act());
   encoder_release(main_menu->enc_data);
-  system("./proxmark3 -p /dev/ttyS1 -b 57600");
+  system("proxmark3 -p /dev/ttyS1 -b 57600");
   encoder_grab(main_menu->enc_data);
   draw_status_bar();
   menu_ui();
