@@ -6,7 +6,7 @@
 #include "lvgl/lvgl.h"
 
 typedef struct {
-  void (*init)(void *);
+  void (*init)(void *, void *);
   void (*exit)();
 } View;
 
@@ -34,7 +34,8 @@ void view_manager_add_view(ViewManager *view_manager, void (*init)(void *),
 /// @param view_manager view manager struct
 /// @param number view's unique number
 /// @return 0 if successfull
-int view_manager_switch_view(ViewManager *view_manager, uint8_t number);
+int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
+                             void *ctx);
 
 /// @brief Remove view from view manager
 /// @param view_manager view manager struct

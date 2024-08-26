@@ -29,7 +29,8 @@ void view_manager_add_view(ViewManager *view_manager, void (*init)(void *),
   printf("Adding view end\n");
 }
 
-int view_manager_switch_view(ViewManager *view_manager, uint8_t number) {
+int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
+                             void *ctx) {
   printf("Switching view\n");
   if (!view_manager->view[number]) {
     printf("View %u is not initialized", number);
@@ -38,7 +39,7 @@ int view_manager_switch_view(ViewManager *view_manager, uint8_t number) {
   if (view_manager->current_view != 0)
     view_manager->view[view_manager->current_view]->exit();
   view_manager->current_view = number;
-  view_manager->view[view_manager->current_view]->init(view_manager);
+  view_manager->view[view_manager->current_view]->init(view_manager, ctx);
   return 0;
 }
 
