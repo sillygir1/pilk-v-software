@@ -40,7 +40,7 @@ float read_voltage(int fd) {
 #endif
   }
   float voltage =
-      ((float)adc_value / 4096 * 3.3) * (float)(R5 + R6) / (float)R6;
+      ((float)adc_value / ADC_MAX_VALUE * 3.3) * (float)(R5 + R6) / (float)R6;
 #ifndef PLUGIN
   printf("%.02f volts\n", voltage);
 #endif
