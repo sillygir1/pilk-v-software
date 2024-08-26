@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 #define ADC_CHANNEL '1'
-#define ADC_MAX_VALUE 4000 // Adjustment for error in resistor values
+#define ADC_MAX_VALUE 4096 // Adjustment for error in resistor values
 #define R5 20.0            // Resistor value in kOhm
 #define R6 68.0            // Resistor value in kOhm
 
