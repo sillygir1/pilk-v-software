@@ -27,8 +27,9 @@ ViewManager *view_manager_init(uint8_t view_count);
 /// @param input input function of the view
 /// @param exit exit function of the view
 /// @param number view's unique number
-void view_manager_add_view(ViewManager *view_manager, void (*init)(void *),
-                           void (*exit)(), uint8_t number);
+void view_manager_add_view(ViewManager *view_manager,
+                           void (*init)(void *, void *), void (*exit)(),
+                           uint8_t number);
 
 /// @brief Switch to view
 /// @param view_manager view manager struct

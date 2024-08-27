@@ -20,8 +20,9 @@ ViewManager *view_manager_init(uint8_t view_count) {
   return view_manager;
 }
 
-void view_manager_add_view(ViewManager *view_manager, void (*init)(void *),
-                           void (*exit)(), uint8_t number) {
+void view_manager_add_view(ViewManager *view_manager,
+                           void (*init)(void *, void *), void (*exit)(),
+                           uint8_t number) {
   printf("Adding view\n");
   view_manager->view[number] = malloc(sizeof(*view_manager->view[number]));
   view_manager->view[number]->init = init;
