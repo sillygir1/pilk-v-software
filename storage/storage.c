@@ -12,7 +12,8 @@ int storage_file_read(char *path, char *filename, char *buff, int buff_size) {
   char *fullpath;
   if (filename)
     fullpath = get_full_path(path, filename);
-
+  else
+    fullpath = path;
   FILE *file = fopen(fullpath, "r");
   if (!file) {
     printf("File opening error!\n");
@@ -28,6 +29,7 @@ int storage_file_read(char *path, char *filename, char *buff, int buff_size) {
   fread(buff, 1, len, file);
 
   fclose(file);
+
   if (filename)
     free(fullpath);
 
@@ -60,7 +62,7 @@ int main() {
 
   system("echo \"test test test\ntest\" > test.txt");
   memset(buff, 0, 32);
-  storage_file_read(".", "test.txt", buff, 32);
+  storage_file_read("test.txt", NULL, buff, 32);
   printf("%s\n", buff);
 
   system("rm test.txt");
