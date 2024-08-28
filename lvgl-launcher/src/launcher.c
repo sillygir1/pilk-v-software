@@ -165,7 +165,7 @@ void draw_status_bar() {
   lv_obj_set_y(main_menu->battery_icon, 5);
 
   main_menu->mode_label = lv_label_create(lv_scr_act());
-  lv_label_set_text(main_menu->mode_label, "USB RNDIS");
+  lv_label_set_text(main_menu->mode_label, "Pilk-V Duo");
   lv_obj_set_align(main_menu->mode_label, LV_ALIGN_TOP_LEFT);
   lv_obj_set_style_pad_left(main_menu->mode_label, 5, LV_PART_MAIN);
 
