@@ -55,7 +55,36 @@ int storage_file_write(char *path, char *filename, char *string) {
   free(fullpath);
 }
 
+int storage_dir_list(char *path, char **arr, int arr_len) {
+  DIR *d;
+  int n = 0;
+  struct dirent *dir;
+  d = opendir(path);
+  if (!d) {
+    printf("Directory opening error.\n");
+    return -1;
+  }
+  while ((dir = readdir(d)) != NULL) {
+    if (strcmp(dir->d_name, "..") == 0 || strcmp(dir->d_name, ".") == 0)
+      continue;
+    if (n >= arr_len) {
+      printf("File array max size reached.\n");
+      break;
+    }
+    arr[n] = malloc(sizeof(char) * strlen(dir->d_name));
+    if (!arr[n])
+      printf("String allocation error\n");
+    // Unsafe, so what? It's open source anyway
+    strcpy(arr[n], dir->d_name);
+    n++;
+  }
+  closedir(d);
+
+  return n;
+}
+
 #ifndef PLUGIN
+#define DIR_LIST_LEN 64
 
 int main() {
   char *buff = malloc(sizeof(char) * 32);
@@ -70,6 +99,18 @@ int main() {
   storage_file_write(".", "test.txt", buff);
   system("cat test.txt");
 
+  printf("\n");
+  char *arr[DIR_LIST_LEN];
+
+  int n = storage_dir_list(".", arr, DIR_LIST_LEN);
+  printf("%d files:\n", n);
+  if (n <= 0)
+    printf("No files\n");
+
+  for (int i = 0; i < n; i++) {
+    printf("%d %s\n", i, arr[i]);
+    free(arr[i]);
+  }
   free(buff);
 }
 
