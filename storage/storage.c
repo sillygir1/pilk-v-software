@@ -40,9 +40,11 @@ int storage_file_write(char *path, char *filename, char *string) {
   char cmd[MAX_PATH_LEN + 10];
   memset(cmd, 0, MAX_PATH_LEN + 10);
   snprintf(cmd, MAX_PATH_LEN + 10, "mkdir -p %s", path);
-
-  char *fullpath = get_full_path(path, filename);
-
+  char *fullpath;
+  if (filename)
+    fullpath = get_full_path(path, filename);
+  else
+    fullpath = path;
   FILE *file = fopen(fullpath, "w");
   if (!file) {
     printf("File opening error!\n");
