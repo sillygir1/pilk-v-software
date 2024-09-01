@@ -1,10 +1,10 @@
 #include "view_manager.h"
 
-ViewManager *view_manager_init(uint8_t view_count) {
+ViewManager *view_manager_init(uint16_t view_count) {
   ViewManager *view_manager = malloc(sizeof(*view_manager));
   view_manager->view_count = view_count;
   view_manager->view = malloc(sizeof(*view_manager->view) * view_count);
-  for (uint8_t i = 0; i < view_count; i++) {
+  for (uint16_t i = 0; i < view_count; i++) {
     view_manager->view[i] = NULL;
   }
   static lv_style_t parent_style;
@@ -22,7 +22,7 @@ ViewManager *view_manager_init(uint8_t view_count) {
 
 void view_manager_add_view(ViewManager *view_manager,
                            void (*init)(void *, void *), void (*exit)(),
-                           uint8_t number) {
+                           uint16_t number) {
   printf("Adding view\n");
   if (view_manager->view[number]) {
     printf("View %u already exists!\n", number);
@@ -33,7 +33,7 @@ void view_manager_add_view(ViewManager *view_manager,
   printf("Adding view end\n");
 }
 
-int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
+int view_manager_switch_view(ViewManager *view_manager, uint16_t number,
                              void *ctx) {
   printf("Switching view\n");
   if (!view_manager->view[number]) {
@@ -47,7 +47,7 @@ int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
   return 0;
 }
 
-void view_manager_remove_view(ViewManager *view_manager, uint8_t number) {
+void view_manager_remove_view(ViewManager *view_manager, uint16_t number) {
   if (view_manager->view[number]) {
     free(view_manager->view[number]);
     view_manager->view[number] = NULL;
@@ -57,7 +57,7 @@ void view_manager_remove_view(ViewManager *view_manager, uint8_t number) {
 void view_manager_free(ViewManager *view_manager) {
   if (!view_manager)
     return;
-  for (uint8_t i = 0; i < view_manager->view_count; i++) {
+  for (uint16_t i = 0; i < view_manager->view_count; i++) {
     view_manager_remove_view(view_manager, i);
   }
   free(view_manager->view);

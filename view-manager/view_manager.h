@@ -12,14 +12,14 @@ typedef struct {
 
 typedef struct {
   View **view;
-  uint8_t current_view;
+  uint16_t current_view;
   lv_obj_t *obj_parent;
-  uint8_t view_count;
+  uint16_t view_count;
 } ViewManager;
 
 /// @brief Initialize view manager
 /// @return Pointer to view manager struct
-ViewManager *view_manager_init(uint8_t view_count);
+ViewManager *view_manager_init(uint16_t view_count);
 
 /// @brief Add view to the view manager
 /// @param view_manager view manager struct
@@ -29,20 +29,20 @@ ViewManager *view_manager_init(uint8_t view_count);
 /// @param number view's unique number
 void view_manager_add_view(ViewManager *view_manager,
                            void (*init)(void *, void *), void (*exit)(),
-                           uint8_t number);
+                           uint16_t number);
 
 /// @brief Switch to view
 /// @param view_manager view manager struct
 /// @param number view's unique number
 /// @param ctx user data passed to view init function
 /// @return 0 if successfull
-int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
+int view_manager_switch_view(ViewManager *view_manager, uint16_t number,
                              void *ctx);
 
 /// @brief Remove view from view manager
 /// @param view_manager view manager struct
 /// @param number view's unique number
-void view_manager_remove_view(ViewManager *view_manager, uint8_t number);
+void view_manager_remove_view(ViewManager *view_manager, uint16_t number);
 
 /// @brief Free view manager
 /// @param view_manager view manager struct
