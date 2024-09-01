@@ -24,6 +24,9 @@ void view_manager_add_view(ViewManager *view_manager,
                            void (*init)(void *, void *), void (*exit)(),
                            uint8_t number) {
   printf("Adding view\n");
+  if (view_manager->view[number]) {
+    printf("View %u already exists!\n", number);
+  }
   view_manager->view[number] = malloc(sizeof(*view_manager->view[number]));
   view_manager->view[number]->init = init;
   view_manager->view[number]->exit = exit;

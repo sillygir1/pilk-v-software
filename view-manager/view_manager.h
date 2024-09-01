@@ -34,6 +34,7 @@ void view_manager_add_view(ViewManager *view_manager,
 /// @brief Switch to view
 /// @param view_manager view manager struct
 /// @param number view's unique number
+/// @param ctx user data passed to view init function
 /// @return 0 if successfull
 int view_manager_switch_view(ViewManager *view_manager, uint8_t number,
                              void *ctx);
