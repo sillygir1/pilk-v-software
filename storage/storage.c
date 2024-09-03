@@ -78,7 +78,7 @@ static void sort_dirs(char **arr, int length) {
   }
 }
 
-int storage_is_dir(char *path) {
+bool storage_is_dir(char *path) {
   DIR *d;
   struct dirent *dir;
   d = opendir(path);

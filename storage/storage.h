@@ -10,7 +10,7 @@
 /// @param filename file name (if path is not full)
 /// @param buff data buffer
 /// @param buff_size data buffer size
-/// @return 
+/// @return
 int storage_file_read(char *path, char *filename, char *buff, int buff_size);
 
 /// @brief Write data to file
@@ -19,6 +19,11 @@ int storage_file_read(char *path, char *filename, char *buff, int buff_size);
 /// @param string data to write
 /// @return 0 if successful
 int storage_file_write(char *path, char *filename, char *string);
+
+/// @brief Returns true if path points to directory
+/// @param path path to directory/file
+/// @return 1 if directory
+bool storage_is_dir(char *path);
 
 /// @brief Get contents of current directory
 /// @param path current directory path
