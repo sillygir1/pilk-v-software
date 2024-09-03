@@ -57,6 +57,26 @@ int storage_file_write(char *path, char *filename, char *string) {
   free(fullpath);
 }
 
+static void sort_dirs(char **arr, int length) {
+  if (length == 0)
+    return;
+
+  bool swapped;
+  for (int i = 0; i < length - 1; i++) {
+    swapped = 0;
+    for (int j = 0; j < length - i - 1; j++) {
+      if (strcmp(arr[j], arr[j + 1]) > 0) {
+        arr[j] = (char *)((uintptr_t)arr[j] ^ (uintptr_t)arr[j + 1]);
+        arr[j + 1] = (char *)((uintptr_t)arr[j] ^ (uintptr_t)arr[j + 1]);
+        arr[j] = (char *)((uintptr_t)arr[j] ^ (uintptr_t)arr[j + 1]);
+        swapped = 1;
+      }
+    }
+    if (!swapped)
+      break;
+  }
+}
+
 int storage_dir_list(char *path, char **arr, int arr_len) {
   DIR *d;
   int n = 0;
@@ -81,6 +101,8 @@ int storage_dir_list(char *path, char **arr, int arr_len) {
     n++;
   }
   closedir(d);
+
+  sort_dirs(arr, n);
 
   return n;
 }
