@@ -78,14 +78,20 @@ static void sort_dirs(char **arr, int length) {
   }
 }
 
-bool storage_is_dir(char *path) {
+bool storage_is_dir(char *path, char *name) {
   DIR *d;
   struct dirent *dir;
-  d = opendir(path);
+  char *fullpath;
+  if (name)
+    fullpath = get_full_path(path, name);
+  else
+    fullpath = path;
+  d = opendir(fullpath);
   if (!d) {
     return 0;
   }
   closedir(d);
+  free(fullpath);
   return 1;
 }
 
@@ -99,13 +105,10 @@ int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
     return -1;
   }
   while ((dir = readdir(d)) != NULL) {
-    char *fullpath = get_full_path(path, dir->d_name);
-    if (skip_dirs && storage_is_dir(fullpath) ||
+    if (skip_dirs && storage_is_dir(path, dir->d_name) ||
         strcmp(dir->d_name, ".") == 0) {
-      free(fullpath);
       continue;
     }
-    free(fullpath);
     if (n >= arr_len) {
       printf("File array max size reached.\n");
       break;
@@ -132,10 +135,14 @@ void storage_dir_up(char *path) {
 }
 
 void storage_dir_down(char *path, char *dir) {
+  printf("%s\n", path);
+  printf("%s\n", dir);
   strcat(path, dir);
   if (path[strlen(path) - 1] != '/')
     strcat(path, "/");
 }
+
+char *storage_get_ext(char *filename) { return strrchr(filename, '.'); }
 
 #ifndef PLUGIN
 #define DIR_LIST_LEN 64
@@ -171,6 +178,10 @@ int main() {
   printf("%s\n", buff);
   storage_dir_down(buff, "now");
   printf("%s\n", buff);
+
+  snprintf(buff, 32, "test.ext");
+  char *ext = storage_get_ext(buff);
+  printf("%s\n", ext);
   free(buff);
 }
 

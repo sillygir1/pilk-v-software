@@ -21,9 +21,10 @@ int storage_file_read(char *path, char *filename, char *buff, int buff_size);
 int storage_file_write(char *path, char *filename, char *string);
 
 /// @brief Returns true if path points to directory
-/// @param path path to directory/file
+/// @param path path to directory
+/// @param name name of object in question
 /// @return 1 if directory
-bool storage_is_dir(char *path);
+bool storage_is_dir(char *path, char *name);
 
 /// @brief Get contents of current directory
 /// @param path current directory path
@@ -41,3 +42,8 @@ void storage_dir_up(char *path);
 /// @param path current directory path
 /// @param dir directory name
 void storage_dir_down(char *path, char *dir);
+
+/// @brief Get file extension from file name
+/// @param filename name of the file
+/// @return pointer to first extension symbol
+char *storage_get_ext(char *filename);
