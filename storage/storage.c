@@ -2,6 +2,7 @@
 
 #define MAX_PATH_LEN 255
 
+// Need to free return value after usage
 static char *get_full_path(char *path, char *filename) {
   char *fullpath = malloc(sizeof(char) * MAX_PATH_LEN);
   snprintf(fullpath, MAX_PATH_LEN, "%s/%s", path, filename);
@@ -77,6 +78,17 @@ static void sort_dirs(char **arr, int length) {
   }
 }
 
+int storage_is_dir(char *path) {
+  DIR *d;
+  struct dirent *dir;
+  d = opendir(path);
+  if (!d) {
+    return 0;
+  }
+  closedir(d);
+  return 1;
+}
+
 int storage_dir_list(char *path, char **arr, int arr_len) {
   DIR *d;
   int n = 0;
@@ -87,8 +99,14 @@ int storage_dir_list(char *path, char **arr, int arr_len) {
     return -1;
   }
   while ((dir = readdir(d)) != NULL) {
-    if (strcmp(dir->d_name, "..") == 0 || strcmp(dir->d_name, ".") == 0)
+    char *fullpath = get_full_path(path, dir->d_name);
+    // if (strcmp(dir->d_name, "..") == 0 || strcmp(dir->d_name, ".") == 0)
+    //   continue;
+    if (storage_is_dir(fullpath)) {
+      free(fullpath);
       continue;
+    }
+    free(fullpath);
     if (n >= arr_len) {
       printf("File array max size reached.\n");
       break;
@@ -105,6 +123,19 @@ int storage_dir_list(char *path, char **arr, int arr_len) {
   sort_dirs(arr, n);
 
   return n;
+}
+
+void storage_dir_up(char *path) {
+  for (uint8_t i = 0; i < 2; i++) {
+    *strrchr(path, '/') = '\0';
+  }
+  strcat(path, "/");
+}
+
+void storage_dir_down(char *path, char *dir) {
+  strcat(path, dir);
+  if (path[strlen(path) - 1] != '/')
+    strcat(path, "/");
 }
 
 #ifndef PLUGIN
@@ -135,6 +166,12 @@ int main() {
     printf("%d %s\n", i, arr[i]);
     free(arr[i]);
   }
+
+  snprintf(buff, 32, "/stop/here/not_here/");
+  storage_dir_up(buff);
+  printf("%s\n", buff);
+  storage_dir_down(buff, "now");
+  printf("%s\n", buff);
   free(buff);
 }
 
