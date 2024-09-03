@@ -89,7 +89,7 @@ int storage_is_dir(char *path) {
   return 1;
 }
 
-int storage_dir_list(char *path, char **arr, int arr_len) {
+int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
   DIR *d;
   int n = 0;
   struct dirent *dir;
@@ -100,9 +100,8 @@ int storage_dir_list(char *path, char **arr, int arr_len) {
   }
   while ((dir = readdir(d)) != NULL) {
     char *fullpath = get_full_path(path, dir->d_name);
-    // if (strcmp(dir->d_name, "..") == 0 || strcmp(dir->d_name, ".") == 0)
-    //   continue;
-    if (storage_is_dir(fullpath)) {
+    if (skip_dirs && storage_is_dir(fullpath) ||
+        strcmp(dir->d_name, ".") == 0) {
       free(fullpath);
       continue;
     }
@@ -157,7 +156,7 @@ int main() {
   printf("\n");
   char *arr[DIR_LIST_LEN];
 
-  int n = storage_dir_list(".", arr, DIR_LIST_LEN);
+  int n = storage_dir_list(".", arr, DIR_LIST_LEN, false);
   printf("%d files:\n", n);
   if (n <= 0)
     printf("No files\n");
