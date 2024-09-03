@@ -4,3 +4,5 @@
 - duo-encoder-kb - application/module for using encoder and buttons via gpio
 - lvgl - lvgl 8.3 used in [spi display example from Milk-V](https://github.com/milkv-duo/duo-lvgl-fb-demo)
 - lvgl-launcher - app launcher using lvgl based on the same example
+- storage - storage tools
+- view manager - module for managing views
