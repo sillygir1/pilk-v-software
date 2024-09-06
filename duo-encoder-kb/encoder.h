@@ -64,7 +64,7 @@ typedef struct {
   bool *running;              // Interrupt thread running flag
   pthread_t encoder_pth;      // Encoder thread identifier
   InputQueue *inputQueue[2];  // Input queues
-} Data;
+} EncoderData;
 
 // From <time.h>
 int nanosleep(const struct timespec *req, struct timespec *rem);
@@ -83,17 +83,17 @@ Input input_queue_read(InputQueue *queue);
 /// @brief Initialize input
 /// @param data Data struct
 /// @return 0 if successful
-int init(Data *data);
+int init(EncoderData *data);
 
 /// @brief Deinitialize input
 /// @param data Data struct
-void deinit(Data *data);
+void deinit(EncoderData *data);
 
 /// @brief Grab input
 /// @param data Data struct
 /// @return 0 if successful
-int encoder_grab(Data *data);
+int encoder_grab(EncoderData *data);
 
 /// @brief Release input
 /// @param data Data struct
-void encoder_release(Data *data);
+void encoder_release(EncoderData *data);

@@ -41,7 +41,7 @@ Input input_queue_read(InputQueue *queue) {
 }
 
 void *encoder_interrupt(void *ctx) {
-  Data *data = ctx;
+  EncoderData *data = ctx;
   uint8_t encoder_A;
   uint8_t encoder_B;
 
@@ -76,7 +76,7 @@ void *encoder_interrupt(void *ctx) {
   return 0;
 }
 
-int init(Data *data) {
+int init(EncoderData *data) {
   char command[64];
 
   for (uint8_t i = 0; i < PINS_NUM; i++) {
@@ -126,7 +126,7 @@ int init(Data *data) {
   return 0;
 }
 
-void deinit(Data *data) {
+void deinit(EncoderData *data) {
   *data->running = false;
 
   if (data->enc_A)
@@ -155,7 +155,7 @@ void deinit(Data *data) {
   }
 }
 
-int encoder_grab(Data *data) {
+int encoder_grab(EncoderData *data) {
   if (init(data) != 0)
     return 1;
   if (pthread_create(&data->encoder_pth, NULL, encoder_interrupt, data) != 0)
@@ -163,7 +163,7 @@ int encoder_grab(Data *data) {
   return 0;
 }
 
-void encoder_release(Data *data) {
+void encoder_release(EncoderData *data) {
   *data->running = false;
   pthread_join(data->encoder_pth, NULL);
   deinit(data);
@@ -174,7 +174,7 @@ void encoder_release(Data *data) {
 static void sig_handler(int _) { running = false; }
 
 int main(void) {
-  Data *data = malloc(sizeof(*data));
+  EncoderData *data = malloc(sizeof(*data));
   data->running = &running;
   struct timespec rem, req = {0, 200 * 1000 * 1000};
   signal(SIGINT, sig_handler);
