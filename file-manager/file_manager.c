@@ -25,7 +25,6 @@ void file_manager_update_list() {
       btn = lv_list_add_btn(list, LV_SYMBOL_DIRECTORY, arr[i]);
       lv_obj_add_event_cb(btn, fm_data->event_handler, LV_EVENT_ALL,
                           view_manager);
-      free(arr[i]);
     }
     for (uint8_t i = 0; i < n; i++) {
       if (storage_is_dir(fm_data->dir, arr[i]))
@@ -33,6 +32,8 @@ void file_manager_update_list() {
       btn = lv_list_add_btn(list, LV_SYMBOL_FILE, arr[i]);
       lv_obj_add_event_cb(btn, fm_data->event_handler, LV_EVENT_ALL,
                           view_manager);
+    }
+    for (uint8_t i = 0; i < n; i++) {
       free(arr[i]);
     }
   }
@@ -64,3 +65,5 @@ void file_manager_exit() {
   }
   lv_obj_del(list);
 }
+
+lv_obj_t *file_manager_glue_stick() { return list; }
