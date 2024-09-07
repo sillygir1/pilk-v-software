@@ -113,7 +113,10 @@ int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
       printf("File array max size reached.\n");
       break;
     }
-    arr[n] = malloc(sizeof(char) * strlen(dir->d_name));
+    int len = sizeof(char) * (strlen(dir->d_name) + 1);
+    if (len < 13)
+      len = 13;
+    arr[n] = malloc(len);
     if (!arr[n])
       printf("String allocation error\n");
     // Unsafe, so what? It's open source anyway
