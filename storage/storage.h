@@ -26,6 +26,12 @@ int storage_file_write(char *path, char *filename, char *string);
 /// @return 1 if directory
 bool storage_is_dir(char *path, char *name);
 
+/// @brief Create a directory
+/// @param path path to directory
+/// @param name new directory name (if path is not full)
+/// @return 0 if successful
+int storage_create_dir(char *path, char *name);
+
 /// @brief Get contents of current directory
 /// @param path current directory path
 /// @param arr directory list array

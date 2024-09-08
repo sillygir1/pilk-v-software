@@ -55,7 +55,8 @@ int storage_file_write(char *path, char *filename, char *string) {
   fwrite(string, 1, strlen(string), file);
 
   fclose(file);
-  free(fullpath);
+  if (filename)
+    free(fullpath);
 }
 
 static void sort_dirs(char **arr, int length) {
@@ -91,8 +92,36 @@ bool storage_is_dir(char *path, char *name) {
     return 0;
   }
   closedir(d);
-  free(fullpath);
+  if (name)
+    free(fullpath);
   return 1;
+}
+
+int storage_create_dir(char *path, char *name) {
+
+  if (storage_is_dir(path, name))
+    return 1;
+
+  DIR *d;
+  struct dirent *dir;
+  char *fullpath;
+  if (name)
+    fullpath = get_full_path(path, name);
+  else
+    fullpath = path;
+
+  char cmd[MAX_PATH_LEN];
+  snprintf(cmd, MAX_PATH_LEN, "mkdir -p %s", fullpath);
+  system(cmd);
+
+  d = opendir(fullpath);
+  if (!d) {
+    return 1;
+  }
+  closedir(d);
+  if (name)
+    free(fullpath);
+  return 0;
 }
 
 int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
@@ -185,6 +214,12 @@ int main() {
   snprintf(buff, 32, "test.ext");
   char *ext = storage_get_ext(buff);
   printf("%s\n", ext);
+
+  snprintf(buff, 32, "test_dir");
+  storage_create_dir(buff, NULL);
+  system("ls -l");
+  system("rm -r test_dir");
+
   free(buff);
 }
 
