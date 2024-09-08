@@ -12,17 +12,20 @@
 
 #include "battery.h"
 #include "encoder.h"
+#include "view_manager.h"
 
 typedef struct {
   bool *running;
-  Data *enc_data;
+  EncoderData *enc_data;
   lv_group_t *input_group;
   lv_obj_t *battery_icon;
   lv_obj_t *mode_label;
   int adc_fd;
-} Main_menu;
+} MenuData;
 
 void lvgl_init();
+
+void set_mode_text(char *text);
 
 void draw_status_bar();
 

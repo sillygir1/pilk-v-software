@@ -1,10 +1,11 @@
 #include "launcher.h"
-#include "views/main_screen.h"
+#include "views/view_list.h"
 
 #define DISP_BUF_SIZE (128 * 1024)
 
 bool running;
-Main_menu *main_menu;
+MenuData *main_menu;
+ViewManager *view_manager;
 
 static void encoder_cb(lv_indev_drv_t *drv, lv_indev_data_t *data) {
   Input input;
@@ -48,10 +49,7 @@ static void buttons_cb(lv_indev_drv_t *drv, lv_indev_data_t *data) {
   }
 }
 
-void battery_timer(lv_timer_t *timer) {
-  Main_menu *main_menu = timer->user_data;
-  update_charge();
-}
+void battery_timer(lv_timer_t *timer) { update_charge(); }
 
 void lvgl_init() {
   /*LittlevGL init*/
@@ -99,6 +97,13 @@ void lvgl_init() {
   lv_indev_set_group(buttons_indev, main_menu->input_group);
   main_menu->enc_data = malloc(sizeof(*main_menu->enc_data));
   main_menu->enc_data->running = &running;
+
+  draw_status_bar();
+
+  view_manager = view_manager_init(VIEW_COUNT);
+  lv_obj_set_scrollbar_mode(view_manager->obj_parent, LV_SCROLLBAR_MODE_OFF);
+  views_init(view_manager);
+  view_manager_switch_view(view_manager, VIEW_MAIN_MENU, NULL);
 }
 
 static void sig_handler(int _) { running = false; }
@@ -108,7 +113,6 @@ int main(void) {
 
   signal(SIGINT, sig_handler);
   lvgl_init();
-  menu_ui();
   encoder_grab(main_menu->enc_data);
 
   system("psplash-write \"MSG Initializing ADC\"");
@@ -117,7 +121,6 @@ int main(void) {
     printf("Adc init issue");
   system("psplash-write \"PROGRESS 100\"");
 
-  draw_status_bar();
   update_charge();
   lv_timer_t *timer = lv_timer_create(battery_timer, 2000, main_menu);
 
@@ -129,8 +132,10 @@ int main(void) {
 
     nanosleep(&req, &rem);
   }
+
   encoder_release(main_menu->enc_data);
   lv_timer_del(timer);
+  view_manager_free(view_manager);
   close(main_menu->adc_fd);
   free(main_menu->enc_data);
   free(main_menu);
@@ -155,6 +160,10 @@ uint32_t custom_tick_get(void) {
   return time_ms;
 }
 
+void set_mode_text(char *text) {
+  lv_label_set_text(main_menu->mode_label, text);
+}
+
 void draw_status_bar() {
   main_menu->battery_icon = lv_label_create(lv_scr_act());
 
@@ -165,6 +174,7 @@ void draw_status_bar() {
   lv_obj_set_y(main_menu->battery_icon, 5);
 
   main_menu->mode_label = lv_label_create(lv_scr_act());
+  // set_mode_text("Pilk-V Duo");
   lv_label_set_text(main_menu->mode_label, "Pilk-V Duo");
   lv_obj_set_align(main_menu->mode_label, LV_ALIGN_TOP_LEFT);
   lv_obj_set_style_pad_left(main_menu->mode_label, 5, LV_PART_MAIN);
@@ -198,5 +208,5 @@ void launch_client() {
   system("proxmark3 -p /dev/ttyS1 -b 57600");
   encoder_grab(main_menu->enc_data);
   draw_status_bar();
-  menu_ui();
+  // view_manager_switch_view(view_manager, VIEW_MAIN_MENU, NULL);
 }
