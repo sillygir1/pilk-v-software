@@ -11,6 +11,7 @@ static void event_handler(lv_event_t *e) {
   if (code == LV_EVENT_CLICKED) {
     const char *button_text = lv_list_get_btn_text(list, obj);
     if (strcmp(button_text, "Proxmark3 client") == 0) {
+      menu_exit();
       launch_client();
       menu_init(view_manager, NULL);
     } else if (strcmp(button_text, "Apps") == 0) {
@@ -73,7 +74,4 @@ void menu_init(void *_view_manager, void *ctx) {
   lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
 }
 
-void menu_exit() {
-  if (list)
-    lv_obj_del(list);
-}
+void menu_exit() { lv_obj_del(list); }

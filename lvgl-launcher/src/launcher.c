@@ -3,7 +3,7 @@
 
 #define DISP_BUF_SIZE (128 * 1024)
 
-bool running;
+bool running = true;
 MenuData *main_menu;
 ViewManager *view_manager;
 
@@ -203,7 +203,6 @@ void update_charge() {
 }
 
 void launch_client() {
-  lv_obj_clean(lv_scr_act());
   encoder_release(main_menu->enc_data);
   system("proxmark3 -p /dev/ttyS1 -b 57600");
   encoder_grab(main_menu->enc_data);
