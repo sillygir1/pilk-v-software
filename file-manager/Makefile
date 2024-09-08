@@ -27,12 +27,12 @@ prefix 			?= /usr
 bindir 			?= $(prefix)/bin
 
 #Collect the files to compile
-MAINSRC = 		./src/main.c
+MAINSRC = 		./main.c
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
 include $(LVGL_DIR)/lv_drivers/lv_drivers.mk
 
-CSRCS 			+=./src/file_manager.c 
+CSRCS 			+=./file_manager.c 
 CSRCS 			+=$(ENC_DIR)/encoder.c 
 CSRCS 			+=$(ADC_DIR)/battery.c 
 CSRCS 			+=$(VM_DIR)/view_manager.c 
