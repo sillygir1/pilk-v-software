@@ -22,3 +22,5 @@ void file_manager_update_list();
 void file_manager_init(void *_view_manager, void *ctx);
 
 void file_manager_exit();
+
+lv_obj_t *file_manager_glue_stick();
