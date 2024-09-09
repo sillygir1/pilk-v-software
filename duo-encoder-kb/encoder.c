@@ -110,7 +110,7 @@ int init(EncoderData *data) {
   }
 
   for (uint8_t i = 0; i < 2; i++) {
-    data->inputQueue[i] = malloc(sizeof(*data->inputQueue[i]));
+    data->inputQueue[i] = calloc(1, sizeof(*data->inputQueue[i]));
     if (pthread_mutex_init(&data->inputQueue[i]->mutex, NULL) != 0) {
       printf("Can't init mutex\n");
       return 1;
@@ -174,7 +174,7 @@ void encoder_release(EncoderData *data) {
 static void sig_handler(int _) { running = false; }
 
 int main(void) {
-  EncoderData *data = malloc(sizeof(*data));
+  EncoderData *data = calloc(1, sizeof(*data));
   data->running = &running;
   struct timespec rem, req = {0, 200 * 1000 * 1000};
   signal(SIGINT, sig_handler);
