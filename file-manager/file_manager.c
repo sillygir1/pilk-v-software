@@ -1,6 +1,11 @@
 #include "file_manager.h"
 
 #define DIR_LIST_LEN 128
+#ifndef FM_PLUGIN
+#define BACK_BUTTON "Exit"
+#else
+#define BACK_BUTTON "Back"
+#endif
 
 static lv_obj_t *list;
 static ViewManager *view_manager;
@@ -13,6 +18,10 @@ void file_manager_update_list() {
   set_mode_text(fm_data->dir);
   lv_obj_clean(list);
   lv_obj_t *btn;
+
+  btn = lv_list_add_btn(list, LV_SYMBOL_BACKSPACE, BACK_BUTTON);
+  lv_obj_add_event_cb(btn, fm_data->event_handler, LV_EVENT_ALL, view_manager);
+
   int n = storage_dir_list(fm_data->dir, arr, DIR_LIST_LEN, skip_dirs);
   if (n == 0) {
     btn = lv_list_add_btn(list, LV_SYMBOL_CLOSE, "No saved files");

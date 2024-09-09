@@ -23,6 +23,10 @@ static void event_handler(lv_event_t *e) {
   if (code == LV_EVENT_CLICKED) {
     const char *button_text = lv_list_get_btn_text(list, obj);
     // printf("%s\n", button_text);
+    if (strcmp(button_text, "Exit") == 0) {
+      raise(SIGINT);
+      return;
+    }
     fm_data->filename = button_text;
 
     if (strcmp(fm_data->filename, "..") == 0) {
@@ -40,10 +44,9 @@ static void event_handler(lv_event_t *e) {
 
     printf("%s\n", fm_data->filename);
 
-  } else if (code == LV_EVENT_KEY) {
-    if (lv_indev_get_key(lv_indev_get_act()) == LV_KEY_ESC) {
-      raise(SIGINT);
-    }
+  } else if (code == LV_EVENT_KEY &&
+             lv_indev_get_key(lv_indev_get_act()) == LV_KEY_ESC) {
+    raise(SIGINT);
   }
 }
 
