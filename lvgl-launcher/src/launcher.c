@@ -202,8 +202,10 @@ void update_charge() {
     lv_label_set_text(main_menu->battery_icon, text);
 }
 
-void launch_client() {
+void launch_app(char *cmd) {
+  if (strcmp(cmd, "") == 0)
+    return;
   encoder_release(main_menu->enc_data);
-  system("proxmark3 -p /dev/ttyS1 -b 57600");
+  system(cmd);
   encoder_grab(main_menu->enc_data);
 }

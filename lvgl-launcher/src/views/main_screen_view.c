@@ -12,7 +12,7 @@ static void event_handler(lv_event_t *e) {
     const char *button_text = lv_list_get_btn_text(list, obj);
     if (strcmp(button_text, "Proxmark3 client") == 0) {
       menu_exit();
-      launch_client();
+      launch_app("proxmark3 -p /dev/ttyS1 -b 57600");
       menu_init(view_manager, NULL);
     } else if (strcmp(button_text, "Apps") == 0) {
       view_manager_switch_view(view_manager, VIEW_APPS, NULL);

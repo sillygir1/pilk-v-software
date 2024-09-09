@@ -31,4 +31,4 @@ void draw_status_bar();
 
 void update_charge();
 
-void launch_client();
+void launch_app(char *cmd);
