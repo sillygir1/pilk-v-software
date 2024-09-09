@@ -206,6 +206,4 @@ void launch_client() {
   encoder_release(main_menu->enc_data);
   system("proxmark3 -p /dev/ttyS1 -b 57600");
   encoder_grab(main_menu->enc_data);
-  draw_status_bar();
-  // view_manager_switch_view(view_manager, VIEW_MAIN_MENU, NULL);
 }
