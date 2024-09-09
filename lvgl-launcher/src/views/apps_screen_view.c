@@ -4,7 +4,7 @@
 static lv_obj_t *list;
 static ViewManager *view_manager;
 
-#define APP_NUM 5
+#define APP_NUM 6
 char *app_names[APP_NUM] = {"Back", "File manager", "app2",
                             "app3", "app4",         "app5"};
 char *app_cmds[APP_NUM] = {"", "file-manager", "", "", "", ""};
