@@ -230,6 +230,9 @@ int main() {
   }
   encoder_release(enc_data);
   lv_timer_del(battery_timer);
+  lv_obj_clean(lv_scr_act());
+  lv_timer_handler();
+  view_manager_free(view_manager);
   close(adc_fd);
   free(enc_data);
   return 0;
