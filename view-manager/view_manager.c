@@ -63,3 +63,35 @@ void view_manager_free(ViewManager *view_manager) {
   free(view_manager->view);
   free(view_manager);
 }
+
+// TODO: Move somewhere else later
+lv_obj_t *view_manager_list_init(ViewManager *view_manager, char **elements,
+                                 const void **icons, uint32_t element_cnt,
+                                 int *labels, int labels_cnt,
+                                 void (*event_handler)(lv_event_t *)) {
+  lv_obj_t *list = lv_list_create(view_manager->obj_parent);
+  lv_obj_set_style_radius(list, 0, LV_PART_MAIN);
+  lv_obj_set_width(list, 240);
+  lv_obj_set_height(list, 295);
+
+  lv_obj_t *btn;
+
+  for (int i = 0; i < element_cnt; i++) {
+    bool skip = 0;
+    if (labels && labels_cnt) {
+      for (int j = 0; j < labels_cnt; j++) {
+        if (labels[j] == i) {
+          lv_list_add_text(list, elements[i]);
+          skip = 1;
+          break;
+        }
+      }
+    }
+    if (skip)
+      continue;
+    btn = lv_list_add_btn(list, icons[i], elements[i]);
+    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
+  }
+
+  return list;
+}
