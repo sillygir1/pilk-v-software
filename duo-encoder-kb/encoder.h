@@ -83,11 +83,11 @@ Input input_queue_read(InputQueue *queue);
 /// @brief Initialize input
 /// @param data Data struct
 /// @return 0 if successful
-int init(EncoderData *data);
+int encoder_init(EncoderData *data);
 
 /// @brief Deinitialize input
 /// @param data Data struct
-void deinit(EncoderData *data);
+void encoder_deinit(EncoderData *data);
 
 /// @brief Grab input
 /// @param data Data struct

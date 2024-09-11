@@ -76,7 +76,7 @@ void *encoder_interrupt(void *ctx) {
   return 0;
 }
 
-int init(EncoderData *data) {
+int encoder_init(EncoderData *data) {
   char command[64];
 
   for (uint8_t i = 0; i < PINS_NUM; i++) {
@@ -126,7 +126,7 @@ int init(EncoderData *data) {
   return 0;
 }
 
-void deinit(EncoderData *data) {
+void encoder_deinit(EncoderData *data) {
   *data->running = false;
 
   if (data->enc_A)
@@ -156,7 +156,7 @@ void deinit(EncoderData *data) {
 }
 
 int encoder_grab(EncoderData *data) {
-  if (init(data) != 0)
+  if (encoder_init(data) != 0)
     return 1;
   if (pthread_create(&data->encoder_pth, NULL, encoder_interrupt, data) != 0)
     return 1;
@@ -166,7 +166,7 @@ int encoder_grab(EncoderData *data) {
 void encoder_release(EncoderData *data) {
   *data->running = false;
   pthread_join(data->encoder_pth, NULL);
-  deinit(data);
+  encoder_deinit(data);
 }
 
 #ifndef PLUGIN
