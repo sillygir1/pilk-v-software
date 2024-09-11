@@ -12,6 +12,11 @@
 #define R5 20.0            // Resistor value in kOhm
 #define R6 68.0            // Resistor value in kOhm
 
+/// @brief Initialize ADC
+/// @return ADC file descriptor, -1 if failed
 int adc_init();
 
+/// @brief Read voltage from ADC
+/// @param fd ADC file descriptor
+/// @return float voltage value considering voltage divider
 float read_voltage(int fd);
