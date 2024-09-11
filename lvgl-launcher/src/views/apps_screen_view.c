@@ -44,16 +44,9 @@ void apps_init(void *_view_manager, void *ctx) {
   // Disabling scrollbar
   lv_obj_set_scrollbar_mode(lv_scr_act(), LV_SCROLLBAR_MODE_OFF);
 
-  list = lv_list_create(view_manager->obj_parent);
-  lv_obj_set_style_radius(list, 0, LV_PART_MAIN);
-  lv_obj_set_width(list, 240);
-  lv_obj_set_height(list, 295);
-
-  lv_obj_t *btn;
-  for (int i = 0; i < APP_NUM; i++) {
-    btn = lv_list_add_btn(list, app_icons[i], app_names[i]);
-    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-  }
+  list =
+      view_manager_list_init(view_manager, app_names, (const void **)app_icons,
+                             APP_NUM, NULL, 0, event_handler);
 }
 
 void apps_exit() { lv_obj_del(list); }

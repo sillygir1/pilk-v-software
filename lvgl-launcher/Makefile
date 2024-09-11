@@ -63,6 +63,12 @@ default: $(TARGET)
 	$(CC) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(CFLAGS) $(LDFLAGS)
 
 clean: 
+	rm -rf $(BUILD_DIR)/bin
+	rm -rf $(BUILD_DIR)/duo-battery
+	rm -rf $(BUILD_DIR)/duo-encoder-kb
+	rm -rf $(BUILD_DIR)/view-manager
+
+clean-all: 
 	rm -rf $(BUILD_DIR)
 
 install:

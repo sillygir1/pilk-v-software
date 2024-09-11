@@ -1,6 +1,17 @@
 #include "main_screen_view.h"
 #include "view_list.h"
 
+#define MENU_ITEMS_CNT 9
+#define MENU_LABELS_CNT 2
+char *menu_items[MENU_ITEMS_CNT] = {
+    "Proxmark3 client", "Apps",  "Settins", "UART config", "USB config",
+    "System settings",  "Power", "Reboot",  "Power off"};
+const char *menu_icons[MENU_ITEMS_CNT] = {
+    LV_SYMBOL_DRIVE,   LV_SYMBOL_DIRECTORY, LV_SYMBOL_DUMMY,
+    LV_SYMBOL_SHUFFLE, LV_SYMBOL_USB,       LV_SYMBOL_SETTINGS,
+    LV_SYMBOL_DUMMY,   LV_SYMBOL_REFRESH,   LV_SYMBOL_POWER};
+int menu_labels[MENU_LABELS_CNT] = {2, 6};
+
 static lv_obj_t *list;
 static ViewManager *view_manager;
 
@@ -47,31 +58,9 @@ void menu_init(void *_view_manager, void *ctx) {
   // Disabling scrollbar
   lv_obj_set_scrollbar_mode(lv_scr_act(), LV_SCROLLBAR_MODE_OFF);
 
-  list = lv_list_create(view_manager->obj_parent);
-  lv_obj_set_style_radius(list, 0, LV_PART_MAIN);
-  lv_obj_set_width(list, 240);
-  lv_obj_set_height(list, 295);
-
-  lv_obj_t *btn;
-
-  btn = lv_list_add_btn(list, LV_SYMBOL_DRIVE, "Proxmark3 client");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-  btn = lv_list_add_btn(list, LV_SYMBOL_DIRECTORY, "Apps");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-
-  lv_list_add_text(list, "Settings");
-  btn = lv_list_add_btn(list, LV_SYMBOL_SHUFFLE, "UART config");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-  btn = lv_list_add_btn(list, LV_SYMBOL_USB, "USB config");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-  btn = lv_list_add_btn(list, LV_SYMBOL_SETTINGS, "System settings");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-
-  lv_list_add_text(list, "Power");
-  btn = lv_list_add_btn(list, LV_SYMBOL_REFRESH, "Reboot");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
-  btn = lv_list_add_btn(list, LV_SYMBOL_POWER, "Power off");
-  lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
+  list = view_manager_list_init(view_manager, menu_items,
+                                (const void **)menu_icons, MENU_ITEMS_CNT,
+                                menu_labels, MENU_LABELS_CNT, event_handler);
 }
 
 void menu_exit() { lv_obj_del(list); }
