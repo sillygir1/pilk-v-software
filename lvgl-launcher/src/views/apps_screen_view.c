@@ -5,12 +5,12 @@ static lv_obj_t *list;
 static ViewManager *view_manager;
 
 #define APP_NUM 6
-char *app_names[APP_NUM] = {"Back", "File manager", "app2",
-                            "app3", "app4",         "app5"};
-char *app_cmds[APP_NUM] = {"", "file-manager", "", "", "", ""};
-char *app_icons[APP_NUM] = {LV_SYMBOL_BACKSPACE, LV_SYMBOL_DIRECTORY,
-                            LV_SYMBOL_LIST,      LV_SYMBOL_LIST,
-                            LV_SYMBOL_LIST,      LV_SYMBOL_LIST};
+static const char *app_names[APP_NUM] = {"Back", "File manager", "app2",
+                                         "app3", "app4",         "app5"};
+static const char *app_cmds[APP_NUM] = {"", "file-manager", "", "", "", ""};
+static const char *app_icons[APP_NUM] = {
+    LV_SYMBOL_BACKSPACE, LV_SYMBOL_DIRECTORY, LV_SYMBOL_LIST,
+    LV_SYMBOL_LIST,      LV_SYMBOL_LIST,      LV_SYMBOL_LIST};
 
 static void event_handler(lv_event_t *e) {
   lv_event_code_t code = lv_event_get_code(e);

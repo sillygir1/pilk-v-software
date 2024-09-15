@@ -3,14 +3,14 @@
 
 #define MENU_ITEMS_CNT 9
 #define MENU_LABELS_CNT 2
-char *menu_items[MENU_ITEMS_CNT] = {
+static const char *menu_items[MENU_ITEMS_CNT] = {
     "Proxmark3 client", "Apps",  "Settins", "UART config", "USB config",
     "System settings",  "Power", "Reboot",  "Power off"};
-const char *menu_icons[MENU_ITEMS_CNT] = {
+static const char *menu_icons[MENU_ITEMS_CNT] = {
     LV_SYMBOL_DRIVE,   LV_SYMBOL_DIRECTORY, LV_SYMBOL_DUMMY,
     LV_SYMBOL_SHUFFLE, LV_SYMBOL_USB,       LV_SYMBOL_SETTINGS,
     LV_SYMBOL_DUMMY,   LV_SYMBOL_REFRESH,   LV_SYMBOL_POWER};
-int menu_labels[MENU_LABELS_CNT] = {2, 6};
+static const int menu_labels[MENU_LABELS_CNT] = {2, 6};
 
 static lv_obj_t *list;
 static ViewManager *view_manager;
