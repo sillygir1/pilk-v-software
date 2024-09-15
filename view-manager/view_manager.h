@@ -17,6 +17,15 @@ typedef struct {
   uint16_t view_count;
 } ViewManager;
 
+typedef struct {
+  char **elements;
+  const void **icons;
+  uint32_t element_cnt;
+  int *labels;
+  int labels_cnt;
+  void (*event_handler)(lv_event_t *);
+} ViewManagerList;
+
 /// @brief Initialize view manager
 /// @return Pointer to view manager struct
 ViewManager *view_manager_init(uint16_t view_count);
@@ -57,7 +66,5 @@ void view_manager_free(ViewManager *view_manager);
 /// @param labels_cnt length of numbers array
 /// @param event_handler input event handler
 /// @return pointer to lvgl list
-lv_obj_t *view_manager_list_init(ViewManager *view_manager, char **elements,
-                                 const void **icons, uint32_t element_cnt,
-                                 int *labels, int labels_cnt,
-                                 void (*event_handler)(lv_event_t *));
+lv_obj_t *view_manager_list_init(ViewManager *view_manager,
+                                 ViewManagerList *vm_list);

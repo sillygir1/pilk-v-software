@@ -65,10 +65,8 @@ void view_manager_free(ViewManager *view_manager) {
 }
 
 // TODO: Move somewhere else later
-lv_obj_t *view_manager_list_init(ViewManager *view_manager, char **elements,
-                                 const void **icons, uint32_t element_cnt,
-                                 int *labels, int labels_cnt,
-                                 void (*event_handler)(lv_event_t *)) {
+lv_obj_t *view_manager_list_init(ViewManager *view_manager,
+                                 ViewManagerList *vm_list) {
   lv_obj_t *list = lv_list_create(view_manager->obj_parent);
   lv_obj_set_style_radius(list, 0, LV_PART_MAIN);
   lv_obj_set_width(list, 240);
@@ -76,12 +74,12 @@ lv_obj_t *view_manager_list_init(ViewManager *view_manager, char **elements,
 
   lv_obj_t *btn;
 
-  for (int i = 0; i < element_cnt; i++) {
+  for (int i = 0; i < vm_list->element_cnt; i++) {
     bool skip = 0;
-    if (labels && labels_cnt) {
-      for (int j = 0; j < labels_cnt; j++) {
-        if (labels[j] == i) {
-          lv_list_add_text(list, elements[i]);
+    if (vm_list->labels && vm_list->labels_cnt) {
+      for (int j = 0; j < vm_list->labels_cnt; j++) {
+        if (vm_list->labels[j] == i) {
+          lv_list_add_text(list, vm_list->elements[i]);
           skip = 1;
           break;
         }
@@ -89,8 +87,8 @@ lv_obj_t *view_manager_list_init(ViewManager *view_manager, char **elements,
     }
     if (skip)
       continue;
-    btn = lv_list_add_btn(list, icons[i], elements[i]);
-    lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
+    btn = lv_list_add_btn(list, vm_list->icons[i], vm_list->elements[i]);
+    lv_obj_add_event_cb(btn, vm_list->event_handler, LV_EVENT_ALL, NULL);
   }
 
   return list;
