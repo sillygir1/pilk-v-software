@@ -18,7 +18,7 @@ typedef struct {
 } ViewManager;
 
 typedef struct {
-  char **elements;
+  const char **elements;
   const void **icons;
   uint32_t element_cnt;
   int *labels;
