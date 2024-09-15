@@ -44,9 +44,9 @@ void apps_init(void *_view_manager, void *ctx) {
   // Disabling scrollbar
   lv_obj_set_scrollbar_mode(lv_scr_act(), LV_SCROLLBAR_MODE_OFF);
 
-  list =
-      view_manager_list_init(view_manager, app_names, (const void **)app_icons,
-                             APP_NUM, NULL, 0, event_handler);
+  ViewManagerList vm_list = {
+      app_names, (const void **)app_icons, APP_NUM, NULL, 0, event_handler};
+  list = view_manager_list_init(view_manager, &vm_list);
 }
 
 void apps_exit() { lv_obj_del(list); }

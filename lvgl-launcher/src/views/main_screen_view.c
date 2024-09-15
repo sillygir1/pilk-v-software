@@ -58,9 +58,10 @@ void menu_init(void *_view_manager, void *ctx) {
   // Disabling scrollbar
   lv_obj_set_scrollbar_mode(lv_scr_act(), LV_SCROLLBAR_MODE_OFF);
 
-  list = view_manager_list_init(view_manager, menu_items,
-                                (const void **)menu_icons, MENU_ITEMS_CNT,
-                                menu_labels, MENU_LABELS_CNT, event_handler);
+  ViewManagerList vm_list = {menu_items,      (const void **)menu_icons,
+                             MENU_ITEMS_CNT,  menu_labels,
+                             MENU_LABELS_CNT, event_handler};
+  list = view_manager_list_init(view_manager, &vm_list);
 }
 
 void menu_exit() { lv_obj_del(list); }
