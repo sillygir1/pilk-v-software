@@ -62,7 +62,15 @@ default: $(TARGET)
 	@mkdir -p $(dir $(BUILD_BIN_DIR)/)
 	$(CC) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(CFLAGS) $(LDFLAGS)
 
-clean: 
+clean:
+	rm -rf $(BUILD_DIR)/bin
+	rm -rf $(BUILD_DIR)/duo-battery
+	rm -rf $(BUILD_DIR)/duo-encoder-kb
+	rm -rf $(BUILD_DIR)/view-manager
+	rm -rf $(BUILD_DIR)/storage
+	cd $(BUILD_DIR)/obj/ && find . -type f ! -name 'lv_*.o' -delete
+
+clean-all: 
 	rm -rf $(BUILD_DIR)
 
 install:

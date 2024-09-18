@@ -56,15 +56,3 @@ void view_manager_remove_view(ViewManager *view_manager, uint16_t number);
 /// @brief Free view manager
 /// @param view_manager view manager struct
 void view_manager_free(ViewManager *view_manager);
-
-/// @brief Initialize basic list view
-/// @param view_manager view manager struct
-/// @param elements list elements
-/// @param icons list icons
-/// @param element_cnt number of list elements
-/// @param labels numbers of text elements
-/// @param labels_cnt length of numbers array
-/// @param event_handler input event handler
-/// @return pointer to lvgl list
-lv_obj_t *view_manager_list_init(ViewManager *view_manager,
-                                 ViewManagerList *vm_list);
