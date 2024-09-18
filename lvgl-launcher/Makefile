@@ -34,6 +34,7 @@ include $(LVGL_DIR)/lv_drivers/lv_drivers.mk
 CSRCS 			+=$(ENC_DIR)/encoder.c 
 CSRCS 			+=$(ADC_DIR)/battery.c 
 CSRCS 			+=$(VM_DIR)/view_manager.c 
+CSRCS 			+=$(VM_DIR)/view_manager_extra.c 
 CSRCS 			+=./src/views/apps_screen_view.c
 CSRCS 			+=./src/views/main_screen_view.c
 CSRCS 			+=./src/views/view_list.c
@@ -67,6 +68,7 @@ clean:
 	rm -rf $(BUILD_DIR)/duo-battery
 	rm -rf $(BUILD_DIR)/duo-encoder-kb
 	rm -rf $(BUILD_DIR)/view-manager
+	cd $(BUILD_DIR)/obj/ && find . -type f ! -name 'lv_*.o' -delete
 
 clean-all: 
 	rm -rf $(BUILD_DIR)

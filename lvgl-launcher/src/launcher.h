@@ -13,6 +13,7 @@
 #include "battery.h"
 #include "encoder.h"
 #include "view_manager.h"
+#include "view_manager_extra.h"
 
 typedef struct {
   bool *running;
