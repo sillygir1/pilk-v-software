@@ -14,7 +14,8 @@ ViewManager *view_manager_init(uint16_t view_count) {
   lv_style_set_y(&parent_style, 25);
   lv_style_set_radius(&parent_style, 0);
   lv_style_set_pad_all(&parent_style, 0);
-  view_manager->obj_parent = lv_obj_create(lv_scr_act());
+  view_manager->screen_main = lv_scr_act();
+  view_manager->obj_parent = lv_obj_create(view_manager->screen_main);
   lv_obj_add_style(view_manager->obj_parent, &parent_style, LV_PART_MAIN);
   view_manager->current_view = 0;
   return view_manager;
@@ -61,5 +62,6 @@ void view_manager_free(ViewManager *view_manager) {
     view_manager_remove_view(view_manager, i);
   }
   free(view_manager->view);
+  lv_obj_del(view_manager->screen_main);
   free(view_manager);
 }

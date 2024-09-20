@@ -1,5 +1,14 @@
 #include "view_manager.h"
 
+typedef struct {
+  const char **elements;
+  const void **icons;
+  uint32_t element_cnt;
+  int *labels;
+  int labels_cnt;
+  void (*event_handler)(lv_event_t *);
+} ViewManagerList;
+
 /// @brief Initialize basic list view
 /// @param view_manager view manager struct
 /// @param elements list elements

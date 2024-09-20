@@ -15,16 +15,8 @@ typedef struct {
   uint16_t current_view;
   lv_obj_t *obj_parent;
   uint16_t view_count;
+  lv_obj_t *screen_main;
 } ViewManager;
-
-typedef struct {
-  const char **elements;
-  const void **icons;
-  uint32_t element_cnt;
-  int *labels;
-  int labels_cnt;
-  void (*event_handler)(lv_event_t *);
-} ViewManagerList;
 
 /// @brief Initialize view manager
 /// @return Pointer to view manager struct
