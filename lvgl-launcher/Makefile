@@ -69,7 +69,9 @@ clean:
 	rm -rf $(BUILD_DIR)/duo-battery
 	rm -rf $(BUILD_DIR)/duo-encoder-kb
 	rm -rf $(BUILD_DIR)/view-manager
-	cd $(BUILD_DIR)/obj/ && find . -type f ! -name 'lv_*.o' -delete
+	@if [ -d "$(BUILD_DIR)/obj/" ]; then\
+		cd $(BUILD_DIR)/obj/ && find . -type f ! -name 'lv_*.o' -delete;\
+	fi
 
 clean-all: 
 	rm -rf $(BUILD_DIR)
