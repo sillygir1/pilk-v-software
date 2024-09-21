@@ -15,7 +15,8 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter \
 					-Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes \
 					-Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare -std=c99
-CFLAGS 			?= -O3 -g0 -mcpu=c906fdv -march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d -Wall -Wshadow -I$(LVGL_DIR)/ -I$(ENC_DIR)/ -I$(ADC_DIR)/ -I$(VM_DIR)/ $(WARNINGS) -DPLUGIN
+CFLAGS 			?= -O3 -g0 -mcpu=c906fdv -march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d -Wall -Wshadow 
+CFLAGS 			+= -I$(LVGL_DIR)/ -I$(ENC_DIR)/ -I$(ADC_DIR)/ -I$(VM_DIR)/ $(WARNINGS) -DPLUGIN
 LDFLAGS 		?= -lm
 BIN 			= launcher
 BUILD_DIR 		= ./build
