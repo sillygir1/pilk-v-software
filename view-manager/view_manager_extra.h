@@ -1,3 +1,5 @@
+#pragma once
+
 #include "view_manager.h"
 
 typedef struct {
