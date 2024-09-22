@@ -24,7 +24,7 @@ typedef struct {
   uint16_t prev_view;
   bool leaving;
   void (*event_handler)(lv_event_t *e);
-  char **paste_buff;
+  char *paste_buff;
   PasteMode paste_mode;
 } FileManagerData;
 
