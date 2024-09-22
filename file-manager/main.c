@@ -66,6 +66,7 @@ static void dialog_cb(char *option) {
     fm_data->paste_mode = PASTE_NONE;
     free(cmd);
     free(fm_data->paste_buff);
+    fm_data->paste_buff = NULL;
     view_manager_dialog_exit();
     file_manager_update_list();
   } else if (strcmp(option, "Cancel operation") == 0) {
@@ -119,7 +120,12 @@ static void event_handler(lv_event_t *e) {
     }
     fm_data->filename = button_text;
 
-    if (strcmp(fm_data->filename, "..") == 0) {
+    if (strcmp(fm_data->filename, ".") == 0) {
+      if (fm_data->paste_mode != 0)
+        goto dialog;
+      else
+        return;
+    } else if (strcmp(fm_data->filename, "..") == 0) {
       if (strcmp(fm_data->dir, "/") == 0)
         return;
       storage_dir_up(fm_data->dir);
@@ -131,7 +137,7 @@ static void event_handler(lv_event_t *e) {
       file_manager_update_list();
       return;
     }
-
+  dialog:;
     char *filename = storage_get_full_path(fm_data->dir, fm_data->filename);
     if (access(filename, F_OK) != 0 && fm_data->paste_mode == 0) {
       return;
