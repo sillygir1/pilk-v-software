@@ -12,3 +12,5 @@ typedef struct {
 } ViewManagerDialog;
 
 void view_manager_dialog(void *_view_manager, ViewManagerDialog *_vm_dialog);
+
+void view_manager_dialog_exit();
