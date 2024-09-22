@@ -41,6 +41,7 @@ void view_manager_dialog(void *_view_manager, ViewManagerDialog *_vm_dialog) {
   lv_indev_set_group(enc_indev[1], input_group[1]);
   lv_group_set_default(input_group[1]);
 
+  list = lv_list_create(lv_scr_act());
   lv_obj_set_style_radius(list, 0, LV_PART_MAIN);
   lv_obj_set_width(list, 230);
   lv_obj_set_height(list, LV_SIZE_CONTENT);
@@ -50,9 +51,9 @@ void view_manager_dialog(void *_view_manager, ViewManagerDialog *_vm_dialog) {
                                  LV_PART_MAIN);
 
   lv_obj_t *btn;
-  lv_list_add_text(list, vm_dialog->options[0]);
-  for (int i = 1; i < vm_dialog->options_num + 1; i++) {
-    btn = lv_list_add_btn(list, vm_dialog->icons[i - 1], vm_dialog->options[i]);
+  lv_list_add_text(list, vm_dialog->title);
+  for (int i = 0; i < vm_dialog->options_num; i++) {
+    btn = lv_list_add_btn(list, vm_dialog->icons[i], vm_dialog->options[i]);
     lv_obj_add_event_cb(btn, event_handler, LV_EVENT_ALL, NULL);
   }
 }
