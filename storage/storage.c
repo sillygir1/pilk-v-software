@@ -2,17 +2,19 @@
 
 #define MAX_PATH_LEN 255
 
-// Need to free return value after usage
-static char *get_full_path(char *path, char *filename) {
+char *storage_get_full_path(char *path, char *filename) {
   char *fullpath = calloc(MAX_PATH_LEN, sizeof(char));
-  snprintf(fullpath, MAX_PATH_LEN, "%s/%s", path, filename);
+  if (path[strlen(path) - 1] == '/')
+    snprintf(fullpath, MAX_PATH_LEN, "%s%s", path, filename);
+  else
+    snprintf(fullpath, MAX_PATH_LEN, "%s/%s", path, filename);
   return fullpath;
 }
 
 int storage_file_read(char *path, char *filename, char *buff, int buff_size) {
   char *fullpath;
   if (filename)
-    fullpath = get_full_path(path, filename);
+    fullpath = storage_get_full_path(path, filename);
   else
     fullpath = path;
   FILE *file = fopen(fullpath, "r");
@@ -43,7 +45,7 @@ int storage_file_write(char *path, char *filename, char *string) {
   snprintf(cmd, MAX_PATH_LEN + 10, "mkdir -p %s", path);
   char *fullpath;
   if (filename)
-    fullpath = get_full_path(path, filename);
+    fullpath = storage_get_full_path(path, filename);
   else
     fullpath = path;
   FILE *file = fopen(fullpath, "w");
@@ -84,7 +86,7 @@ bool storage_is_dir(char *path, char *name) {
   struct dirent *dir;
   char *fullpath;
   if (name)
-    fullpath = get_full_path(path, name);
+    fullpath = storage_get_full_path(path, name);
   else
     fullpath = path;
   d = opendir(fullpath);
@@ -106,7 +108,7 @@ int storage_create_dir(char *path, char *name) {
   struct dirent *dir;
   char *fullpath;
   if (name)
-    fullpath = get_full_path(path, name);
+    fullpath = storage_get_full_path(path, name);
   else
     fullpath = path;
 

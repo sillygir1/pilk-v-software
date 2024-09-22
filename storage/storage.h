@@ -5,12 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+/// @brief Get full path from path and filename
+/// @param path directory path
+/// @param filename filename
+/// @return pointer to allocated string (needs to be freed after usage)
+char *storage_get_full_path(char *path, char *filename);
+
 /// @brief Read data from file
 /// @param path current directory path/full path
 /// @param filename file name (if path is not full)
 /// @param buff data buffer
 /// @param buff_size data buffer size
-/// @return
+/// @return 0 if successful
 int storage_file_read(char *path, char *filename, char *buff, int buff_size);
 
 /// @brief Write data to file
@@ -23,7 +29,7 @@ int storage_file_write(char *path, char *filename, char *string);
 /// @brief Returns true if path points to directory
 /// @param path path to directory
 /// @param name name of object in question
-/// @return 1 if directory
+/// @return true if directory
 bool storage_is_dir(char *path, char *name);
 
 /// @brief Create a directory
