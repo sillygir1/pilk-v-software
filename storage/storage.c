@@ -136,8 +136,7 @@ int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
     return -1;
   }
   while ((dir = readdir(d)) != NULL) {
-    if (skip_dirs && storage_is_dir(path, dir->d_name) ||
-        strcmp(dir->d_name, ".") == 0) {
+    if (skip_dirs && storage_is_dir(path, dir->d_name)) {
       continue;
     }
     if (n >= arr_len) {
