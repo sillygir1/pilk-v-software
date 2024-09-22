@@ -2,19 +2,14 @@
 
 bool running;
 
-static void sig_handler(int _)
-{
-  running = false;
-}
+static void sig_handler(int _) { running = false; }
 
-int main(void)
-{
-  Data* data = malloc(sizeof(*data));
+int main(void) {
+  Data *data = malloc(sizeof(*data));
   data->running = &running;
   signal(SIGINT, sig_handler);
 
-  if (encoder_grab(data) != 0)
-  {
+  if (encoder_grab(data) != 0) {
     printf("Test: encoder grab failure\n");
     return 1;
   }
@@ -22,15 +17,12 @@ int main(void)
   printf("Test: encoder grabbed successfully\n");
   Input input;
   struct timespec rem, req = {0, 200 * 1000 * 1000};
-  while (*data->running)
-  {
-    if (data->inputQueue[INPUT_DEVICE_ENCODER]->QueueSize > 0)
-    {
+  while (*data->running) {
+    if (data->inputQueue[INPUT_DEVICE_ENCODER]->QueueSize > 0) {
       input = input_queue_read(data->inputQueue[INPUT_DEVICE_ENCODER]);
       printf("Test: encoder %d\n", input.key);
     }
-    if (data->inputQueue[INPUT_DEVICE_BUTTONS]->QueueSize > 0)
-    {
+    if (data->inputQueue[INPUT_DEVICE_BUTTONS]->QueueSize > 0) {
       input = input_queue_read(data->inputQueue[INPUT_DEVICE_BUTTONS]);
       printf("Test: buttons %d %s\n", input.key, input.type ? "up" : "down");
     }
