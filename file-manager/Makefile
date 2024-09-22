@@ -38,6 +38,7 @@ CSRCS 			+=./file_manager.c
 CSRCS 			+=$(ENC_DIR)/encoder.c 
 CSRCS 			+=$(ADC_DIR)/battery.c 
 CSRCS 			+=$(VM_DIR)/view_manager.c 
+CSRCS 			+=$(VM_DIR)/view_manager_dialog.c 
 CSRCS 			+=$(VM_DIR)/view_manager_extra.c 
 CSRCS 			+=$(STORAGE_DIR)/storage.c 
 

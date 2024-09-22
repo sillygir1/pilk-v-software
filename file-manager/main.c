@@ -16,6 +16,12 @@ lv_obj_t *battery_icon;
 lv_obj_t *mode_label;
 int adc_fd;
 
+// Handle chosen option
+static void dialog_cb(char *option) {
+  // TODO
+  printf("Dialog returned '%s'\n", option);
+}
+
 static void event_handler(lv_event_t *e) {
   lv_event_code_t code = lv_event_get_code(e);
   lv_obj_t *obj = lv_event_get_target(e);
@@ -42,7 +48,18 @@ static void event_handler(lv_event_t *e) {
       return;
     }
 
+    ViewManagerDialog *vm_dialog = calloc(1, sizeof(*vm_dialog));
+    static char *opts[3] = {"Copy", "Move", "Delete"};
+    static const char *icons[3] = {LV_SYMBOL_COPY, LV_SYMBOL_CUT,
+                                   LV_SYMBOL_TRASH};
+    vm_dialog->title = button_text;
+    vm_dialog->options = opts;
+    vm_dialog->icons = icons;
+    vm_dialog->options_num = 3;
+    vm_dialog->cb = dialog_cb;
+
     printf("%s\n", fm_data->filename);
+    view_manager_dialog(view_manager, vm_dialog);
 
   } else if (code == LV_EVENT_KEY &&
              lv_indev_get_key(lv_indev_get_act()) == LV_KEY_ESC) {
@@ -193,6 +210,10 @@ static void lvgl_init() {
   lv_indev_set_group(buttons_indev, input_group);
   enc_data = calloc(1, sizeof(*enc_data));
   enc_data->running = &running;
+}
+
+int main() {
+  lvgl_init();
 
   adc_fd = adc_init();
   if (adc_fd < 0)
@@ -213,10 +234,6 @@ static void lvgl_init() {
   strcpy(fm_data->dir, "/");
   fm_data->file_type = 0;
   view_manager_switch_view(view_manager, 1, fm_data);
-}
-
-int main() {
-  lvgl_init();
 
   draw_status_bar();
   update_charge();

@@ -4,6 +4,7 @@
 #include "encoder.h"
 #include "storage.h"
 #include "view_manager.h"
+#include "view_manager_dialog.h"
 #include <sys/time.h>
 
 #define PATH_MAXLEN 128
