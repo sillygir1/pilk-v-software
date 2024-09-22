@@ -88,14 +88,14 @@ void lvgl_init() {
   buttons_drv.read_cb = buttons_cb;
   lv_indev_t *buttons_indev = lv_indev_drv_register(&buttons_drv);
 
-  main_menu = malloc(sizeof(*main_menu));
+  main_menu = calloc(1, sizeof(*main_menu));
   main_menu->running = &running;
 
   main_menu->input_group = lv_group_create();
   lv_group_set_default(main_menu->input_group);
   lv_indev_set_group(encoder_indev, main_menu->input_group);
   lv_indev_set_group(buttons_indev, main_menu->input_group);
-  main_menu->enc_data = malloc(sizeof(*main_menu->enc_data));
+  main_menu->enc_data = calloc(1, sizeof(*main_menu->enc_data));
   main_menu->enc_data->running = &running;
 
   draw_status_bar();

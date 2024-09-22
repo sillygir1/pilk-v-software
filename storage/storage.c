@@ -4,7 +4,7 @@
 
 // Need to free return value after usage
 static char *get_full_path(char *path, char *filename) {
-  char *fullpath = malloc(sizeof(char) * MAX_PATH_LEN);
+  char *fullpath = calloc(MAX_PATH_LEN, sizeof(char));
   snprintf(fullpath, MAX_PATH_LEN, "%s/%s", path, filename);
   return fullpath;
 }
@@ -145,7 +145,7 @@ int storage_dir_list(char *path, char **arr, int arr_len, bool skip_dirs) {
     int len = sizeof(char) * (strlen(dir->d_name) + 1);
     if (len < 13)
       len = 13;
-    arr[n] = malloc(len);
+    arr[n] = calloc(len, sizeof(char));
     if (!arr[n])
       printf("String allocation error\n");
     // Unsafe, so what? It's open source anyway
@@ -180,7 +180,7 @@ char *storage_get_ext(char *filename) { return strrchr(filename, '.'); }
 #define DIR_LIST_LEN 64
 
 int main() {
-  char *buff = malloc(sizeof(char) * 32);
+  char *buff = calloc(1, sizeof(char));
 
   system("echo \"test test test\ntest\" > test.txt");
   memset(buff, 0, 32);

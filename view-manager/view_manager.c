@@ -1,9 +1,9 @@
 #include "view_manager.h"
 
 ViewManager *view_manager_init(uint16_t view_count) {
-  ViewManager *view_manager = malloc(sizeof(*view_manager));
+  ViewManager *view_manager = calloc(1, sizeof(*view_manager));
   view_manager->view_count = view_count + 1;
-  view_manager->view = malloc(sizeof(*view_manager->view) * view_count);
+  view_manager->view = calloc(1, sizeof(*view_manager->view) * view_count);
   for (uint16_t i = 0; i < view_count; i++) {
     view_manager->view[i] = NULL;
   }
@@ -28,7 +28,7 @@ void view_manager_add_view(ViewManager *view_manager,
   if (view_manager->view[number]) {
     printf("View %u already exists!\n", number);
   }
-  view_manager->view[number] = malloc(sizeof(*view_manager->view[number]));
+  view_manager->view[number] = calloc(1, sizeof(*view_manager->view[number]));
   view_manager->view[number]->init = init;
   view_manager->view[number]->exit = exit;
   view_manager->view_count += 1;

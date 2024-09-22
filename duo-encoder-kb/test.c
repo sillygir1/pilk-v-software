@@ -5,7 +5,7 @@ bool running;
 static void sig_handler(int _) { running = false; }
 
 int main(void) {
-  EncoderData *data = malloc(sizeof(*data));
+  EncoderData *data = calloc(1, sizeof(*data));
   data->running = &running;
   signal(SIGINT, sig_handler);
 

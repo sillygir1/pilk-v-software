@@ -191,7 +191,7 @@ static void lvgl_init() {
   lv_group_set_default(input_group);
   lv_indev_set_group(encoder_indev, input_group);
   lv_indev_set_group(buttons_indev, input_group);
-  enc_data = malloc(sizeof(*enc_data));
+  enc_data = calloc(1, sizeof(*enc_data));
   enc_data->running = &running;
 
   adc_fd = adc_init();
@@ -208,7 +208,7 @@ static void lvgl_init() {
   view_manager = view_manager_init(1);
   lv_obj_set_scrollbar_mode(view_manager->obj_parent, LV_SCROLLBAR_MODE_OFF);
   view_manager_add_view(view_manager, file_manager_init, file_manager_exit, 1);
-  fm_data = malloc(sizeof(*fm_data));
+  fm_data = calloc(1, sizeof(*fm_data));
   fm_data->event_handler = event_handler;
   strcpy(fm_data->dir, "/");
   fm_data->file_type = 0;
