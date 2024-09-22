@@ -9,6 +9,14 @@
 
 #define PATH_MAXLEN 128
 
+typedef enum {
+  PASTE_NONE,
+  PASTE_COPY,
+  PASTE_MOVE,
+
+  PASTE_MAX,
+} PasteMode;
+
 typedef struct {
   int file_type;
   char *filename;
@@ -16,6 +24,8 @@ typedef struct {
   uint16_t prev_view;
   bool leaving;
   void (*event_handler)(lv_event_t *e);
+  char **paste_buff;
+  PasteMode paste_mode;
 } FileManagerData;
 
 void file_manager_update_list();

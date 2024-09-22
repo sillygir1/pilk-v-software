@@ -45,6 +45,11 @@ void file_manager_update_list() {
     for (uint8_t i = 0; i < n; i++) {
       free(arr[i]);
     }
+    if (n == 1) {
+      btn = lv_list_add_btn(list, LV_SYMBOL_CLOSE, "Empty directory");
+      lv_obj_add_event_cb(btn, fm_data->event_handler, LV_EVENT_ALL,
+                          view_manager);
+    }
   }
 }
 

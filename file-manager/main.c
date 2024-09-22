@@ -11,15 +11,99 @@ static bool skip_dirs;
 static bool running;
 static lv_group_t *input_group;
 static EncoderData *enc_data;
-lv_timer_t *battery_timer;
-lv_obj_t *battery_icon;
-lv_obj_t *mode_label;
-int adc_fd;
+static lv_timer_t *battery_timer;
+static lv_obj_t *battery_icon;
+static lv_obj_t *mode_label;
+static int adc_fd;
+
+#define OPTS_NUM 6
+static char *dialog_opts[OPTS_NUM] = {
+    "Paste here", "Cancel operation", "Copy", "Move", "Delete", "Close"};
+static const char *dialog_icons[OPTS_NUM] = {LV_SYMBOL_PASTE, LV_SYMBOL_CLOSE,
+                                             LV_SYMBOL_COPY,  LV_SYMBOL_CUT,
+                                             LV_SYMBOL_TRASH, LV_SYMBOL_CLOSE};
+
+static void delete_cb(char *option) {
+  printf("Delete dialog returned '%s'\n", option);
+  if (strcmp(option, "Yes") == 0) {
+    char *path = storage_get_full_path(fm_data->dir, fm_data->filename);
+    char *cmd = calloc(strlen(path) + 4, 1);
+    snprintf(cmd, strlen(path) + 4, "rm %s", path);
+    printf("%s\n", cmd);
+    system(cmd);
+    free(path);
+    free(cmd);
+    view_manager_dialog_exit();
+    view_manager_dialog_exit();
+    file_manager_update_list();
+  } else if (strcmp(option, "No") == 0) {
+    view_manager_dialog_exit();
+    view_manager_dialog_exit();
+  }
+}
 
 // Handle chosen option
 static void dialog_cb(char *option) {
-  // TODO
   printf("Dialog returned '%s'\n", option);
+  if (strcmp(option, "Paste here") == 0) {
+    uint16_t size = strlen(fm_data->paste_buff) + strlen(fm_data->dir) + 5;
+    char *cmd = calloc(size, 1);
+    switch (fm_data->paste_mode) {
+    case PASTE_COPY:
+      snprintf(cmd, size, "cp %s %s", fm_data->paste_buff, fm_data->dir);
+      printf("%s\n", cmd);
+      system(cmd);
+      break;
+    case PASTE_MOVE:
+      snprintf(cmd, size, "mv %s %s", fm_data->paste_buff, fm_data->dir);
+      printf("%s\n", cmd);
+      system(cmd);
+      break;
+    default:
+      // Do nothing
+      break;
+    }
+    fm_data->paste_mode = PASTE_NONE;
+    free(cmd);
+    free(fm_data->paste_buff);
+    view_manager_dialog_exit();
+    file_manager_update_list();
+  } else if (strcmp(option, "Cancel operation") == 0) {
+    if (fm_data->paste_mode != PASTE_NONE && fm_data->paste_buff != NULL) {
+      free(fm_data->paste_buff);
+      fm_data->paste_buff = NULL;
+      fm_data->paste_mode = PASTE_NONE;
+    }
+    view_manager_dialog_exit();
+  } else if (strcmp(option, "Copy") == 0) {
+    fm_data->paste_mode = PASTE_COPY;
+    if (fm_data->paste_buff != NULL)
+      free(fm_data->paste_buff);
+    fm_data->paste_buff =
+        storage_get_full_path(fm_data->dir, fm_data->filename);
+    view_manager_dialog_exit();
+  } else if (strcmp(option, "Move") == 0) {
+    fm_data->paste_mode = PASTE_MOVE;
+    if (fm_data->paste_buff != NULL)
+      free(fm_data->paste_buff);
+    fm_data->paste_buff =
+        storage_get_full_path(fm_data->dir, fm_data->filename);
+    view_manager_dialog_exit();
+  } else if (strcmp(option, "Delete") == 0) {
+    static char *delete_opts[2] = {"Yes", "No"};
+    static const char *delete_icons[2] = {LV_SYMBOL_OK, LV_SYMBOL_CLOSE};
+
+    ViewManagerDialog *vm_dialog = calloc(1, sizeof(*vm_dialog));
+    vm_dialog->title = LV_SYMBOL_WARNING " Delete file?";
+    vm_dialog->options = delete_opts;
+    vm_dialog->options_num = 2;
+    vm_dialog->icons = delete_icons;
+    vm_dialog->cb = delete_cb;
+
+    view_manager_dialog(view_manager, vm_dialog);
+  } else if (strcmp(option, "Close") == 0) {
+    view_manager_dialog_exit();
+  }
 }
 
 static void event_handler(lv_event_t *e) {
@@ -48,19 +132,27 @@ static void event_handler(lv_event_t *e) {
       return;
     }
 
+    char *filename = storage_get_full_path(fm_data->dir, fm_data->filename);
+    if (access(filename, F_OK) != 0 && fm_data->paste_mode == 0) {
+      return;
+    }
+    free(filename);
+
     ViewManagerDialog *vm_dialog = calloc(1, sizeof(*vm_dialog));
-    static char *opts[3] = {"Copy", "Move", "Delete"};
-    static const char *icons[3] = {LV_SYMBOL_COPY, LV_SYMBOL_CUT,
-                                   LV_SYMBOL_TRASH};
     vm_dialog->title = button_text;
-    vm_dialog->options = opts;
-    vm_dialog->icons = icons;
-    vm_dialog->options_num = 3;
+    if (fm_data->paste_mode != 0) {
+      vm_dialog->options = dialog_opts;
+      vm_dialog->options_num = OPTS_NUM;
+      vm_dialog->icons = dialog_icons;
+    } else {
+      vm_dialog->options = &dialog_opts[2];
+      vm_dialog->options_num = OPTS_NUM - 2;
+      vm_dialog->icons = &dialog_icons[2];
+    }
     vm_dialog->cb = dialog_cb;
 
     printf("%s\n", fm_data->filename);
     view_manager_dialog(view_manager, vm_dialog);
-
   } else if (code == LV_EVENT_KEY &&
              lv_indev_get_key(lv_indev_get_act()) == LV_KEY_ESC) {
     raise(SIGINT);
@@ -118,6 +210,8 @@ void draw_status_bar() {
 
   mode_label = lv_label_create(lv_scr_act());
   lv_label_set_text(mode_label, "");
+  lv_obj_set_width(mode_label, 180);
+  lv_label_set_long_mode(mode_label, LV_LABEL_LONG_SCROLL_CIRCULAR);
   lv_obj_set_align(mode_label, LV_ALIGN_TOP_LEFT);
   lv_obj_set_style_pad_left(mode_label, 5, LV_PART_MAIN);
 
@@ -202,6 +296,7 @@ static void lvgl_init() {
   lv_indev_drv_init(&buttons_drv);
   buttons_drv.type = LV_INDEV_TYPE_KEYPAD;
   buttons_drv.read_cb = buttons_cb;
+  buttons_drv.long_press_time = 400;
   lv_indev_t *buttons_indev = lv_indev_drv_register(&buttons_drv);
 
   input_group = lv_group_create();
@@ -231,12 +326,9 @@ int main() {
   view_manager_add_view(view_manager, file_manager_init, file_manager_exit, 1);
   fm_data = calloc(1, sizeof(*fm_data));
   fm_data->event_handler = event_handler;
-  strcpy(fm_data->dir, "/");
+  strcpy(fm_data->dir, "/root/");
   fm_data->file_type = 0;
   view_manager_switch_view(view_manager, 1, fm_data);
-
-  draw_status_bar();
-  update_charge();
 
   running = true;
   struct timespec rem, req = {0, 100 * 1000 * 1000};
@@ -250,6 +342,9 @@ int main() {
   lv_obj_clean(lv_scr_act());
   lv_timer_handler();
   view_manager_free(view_manager);
+  if (fm_data->paste_buff != NULL)
+    free(fm_data->paste_buff);
+  free(fm_data);
   close(adc_fd);
   free(enc_data);
   return 0;
